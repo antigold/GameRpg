@@ -20,7 +20,7 @@ static void MoveRight(Entity* entity, Board& board) {
 	if (newX >= BOARD_SIZE) {
 		newX = 0; 
 	}
-	// Supprime l'entité de l'ancienne position
+	// Supprime l'entitï¿½ de l'ancienne position
 	board.DeleteEntity(pos[0], pos[1]);
 
 	board.setEntity(newX, newY, entity);
@@ -34,7 +34,7 @@ static void MoveLeft(Entity* entity, Board& board) {
 	if (newX < 0) {
 		newX = BOARD_SIZE - 1;
 	}
-	// Supprime l'entité de l'ancienne position
+	// Supprime l'entitï¿½ de l'ancienne position
 	board.DeleteEntity(pos[0], pos[1]);
 
 	board.setEntity(newX, newY, entity);
@@ -48,7 +48,7 @@ static void MoveUp(Entity* entity, Board& board) {
 	if (newX < 0) {
 		newX = BOARD_SIZE - 1;
 	}
-	// Supprime l'entité de l'ancienne position
+	// Supprime l'entitï¿½ de l'ancienne position
 	board.DeleteEntity(pos[0], pos[1]);
 
 	board.setEntity(newX, newY, entity);
@@ -62,7 +62,7 @@ static void MoveDown(Entity* entity, Board& board) {
 	if (newX >= BOARD_SIZE) {
 		newX = 0;
 	}
-	// Supprime l'entité de l'ancienne position
+	// Supprime l'entitï¿½ de l'ancienne position
 	board.DeleteEntity(pos[0], pos[1]);
 
 	board.setEntity(newX, newY, entity);
@@ -106,12 +106,4 @@ void run() {
 	board.setEntity(BOARD_SIZE / 2, BOARD_SIZE / 2, player);
 	player->addItem(std::move(item));
 	//////////////////////////////////////
-
-	bool isGameRunning = true;
-
-	DisplayBoard(board);
-
-	while (isGameRunning) {
-		isGameRunning = false;
-	}
 }

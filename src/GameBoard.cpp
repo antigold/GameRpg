@@ -1,6 +1,6 @@
 #include <iostream>
-#include <SDL3/SDL.h>
 #include "Actions.cpp"
+#include <SDL.h>
 
 
 // Ce fichier va generer le plateau de jeu
@@ -27,7 +27,7 @@ public:
 	}
 	~Board() {
 		for (int i = 0; i < BOARD_SIZE; ++i) {
-			for (int j = 0; j < BOARD_SIZE; ++j) {  // Libère chaque entité
+			for (int j = 0; j < BOARD_SIZE; ++j) {  // Libï¿½re chaque entitï¿½
 				board[i][j] = nullptr; // Bonne pratique
 				delete board[i][j];
 			}
@@ -38,7 +38,7 @@ public:
 		if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
 			board[x][y] = entity;
 			if (entity != nullptr) {
-				entity->setPosition(x, y);  // Met à jour la position de l'entité
+				entity->setPosition(x, y);  // Met ï¿½ jour la position de l'entitï¿½
 			}
 		} else {
 			delete entity;
@@ -47,7 +47,7 @@ public:
 
 	void DeleteEntity(int x, int y) {
 		if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
-			board[x][y] = nullptr;  // Remplace par une entité de type Void
+			board[x][y] = nullptr;  // Remplace par une entitï¿½ de type Void
 		}
 	}
 
@@ -59,8 +59,7 @@ public:
 			return board[x][y]->getType();
 		}
 		return EntityType::VOID;
-	}
-
+	};
 };
 
 
@@ -97,7 +96,7 @@ void DisplayBoard(Board& board) {
 void DrawBoard(SDL_Renderer* renderer, const Board& board) {
 	for (int i = 0; i < BOARD_SIZE; ++i) {
 		for (int j = 0; j < BOARD_SIZE; ++j) {
-			SDL_FRect cell = { j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE };
+			SDL_Rect cell = { j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE };
 
 			switch (board.getEntityType(i, j)) {
 			case EntityType::VOID:
@@ -114,7 +113,7 @@ void DrawBoard(SDL_Renderer* renderer, const Board& board) {
 
 			// Dessiner le contour de la cellule
 			SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
-			SDL_RenderRect(renderer, &cell);
+			SDL_RenderDrawRect(renderer, &cell);
 		}
 	}
 }

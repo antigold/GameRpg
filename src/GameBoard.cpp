@@ -1,6 +1,5 @@
 #include <iostream>
 #include "Actions.cpp"
-#include <SDL.h>
 
 
 // Ce fichier va generer le plateau de jeu
@@ -38,7 +37,7 @@ public:
 		if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
 			board[x][y] = entity;
 			if (entity != nullptr) {
-				entity->setPosition(x, y);  // Met � jour la position de l'entit�
+				entity->setPosition(x, y);  // Met à jour la position de l'entit�
 			}
 		} else {
 			delete entity;

@@ -1,4 +1,5 @@
 #include <iostream>
+#pragma once
 #include <memory>
 #include "GameBoard.cpp"
 
@@ -77,6 +78,7 @@ static void Move(Entity* entity, Board& board, int dx, int dy) {
 	board.setEntity(newX, newY, entity);
 }
 
+/*
 void run() {
 	/*
 	Board board;
@@ -95,7 +97,7 @@ void run() {
 	position = player->getPosition();
 	DisplayBoard(board);
 	Info(player, position);
-	*/
+	
 	Board board;
 	Player* player = new Player(100, 50, 10, { 0, 0 });
 	std::unique_ptr<Item> item = std::make_unique<Weapon>("Sword", 5, ItemType::WEAPON, WeaponType::SWORD);
@@ -107,3 +109,4 @@ void run() {
 	player->addItem(std::move(item));
 	//////////////////////////////////////
 }
+	*/

@@ -1,6 +1,8 @@
 #include <iostream>
+#pragma once
 #include <array>
 #include <vector>
+#include <memory>
 
 enum class EntityType {
 	PLAYER,
@@ -107,14 +109,7 @@ public:
 	}
 
 	void removeItem(const std::string& itemName) {
-		auto it = std::remove_if(inventory.begin(), inventory.end(),
-			[&itemName](const std::unique_ptr<Item>& item) { return item->getName() == itemName; });
-		if (it != inventory.end()) {
-			inventory.erase(it, inventory.end());
-		}
-		else {
-			std::cerr << "Item not found in inventory." << std::endl;
-		}
+		std::cout << "test" << std::endl;
 	}
 
 	int getLevel() const {

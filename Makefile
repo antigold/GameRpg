@@ -2,7 +2,7 @@
 
 CXX = g++
 CXXFLAGS = -g -Wall -std=c++17 -fdiagnostics-color=always
-LDFLAGS = -lmingw32 -lSDL2main -lSDL2 -mwindows
+LDFLAGS = -lmingw32 -lSDL2main -lSDL2 -mwindows -lSDL2_ttf
 INCLUDES = -IC:/msys64/ucrt64/include/SDL2
 LIBDIRS = -LC:/msys64/ucrt64/lib
 

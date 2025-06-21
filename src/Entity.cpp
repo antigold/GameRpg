@@ -92,6 +92,10 @@ public:
 		defense = newDefense; 
 	}
 
+	const std::vector<std::unique_ptr<Item>>& getInventory() const {
+		return inventory;
+	}
+
 	void listInventory() {
 		std::cout << "Inventory: " << std::endl;
 		for (const auto& item : inventory) {

@@ -2,6 +2,7 @@
 #include <iostream>
 #pragma once
 #include"GameFunction.cpp"
+#include "EntitySpawn.cpp"
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include "input.cpp"
@@ -10,7 +11,14 @@ int main(int argc, char *argv[]) {
 
 	Board board;
 	Player* player = new Player(100,50,10,{0,0});
+    Mob* Mob1 = new Mob(50,5,{12,15});
+    
 	board.setEntity(BOARD_SIZE/2, BOARD_SIZE/2, player);
+    
+    std::vector<int> randomPos = generateRandomPosition(BOARD_SIZE);
+    
+    board.setEntity(randomPos[0],randomPos[1] , Mob1);
+
     player->addItem(std::make_unique<Weapon>("Sword", 15, ItemType::WEAPON, WeaponType::SWORD));
     player->addItem(std::make_unique<Weapon>("Bow", 10, ItemType::WEAPON, WeaponType::BOW));
 

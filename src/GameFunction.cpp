@@ -3,16 +3,6 @@
 #include <memory>
 #include "GameBoard.cpp"
 
-
-static void Info(Player* player, std::array<int, 2> position) {
-	std::cout << "Player is at position: (" << position[0] << ", " << position[1] << ")" << std::endl;
-	std::cout << "Player HP: " << player->getHp() << std::endl;
-	std::cout << "Player Attack: " << player->getAttack() << std::endl;
-	std::cout << "Player Defense: " << player->getDefense() << std::endl;
-	player->listInventory();
-	player->displayXp();
-}
-
 static void MoveRight(Entity* entity, Board& board) {
     auto pos = entity->getPosition();
     int newX = pos[0];
@@ -75,6 +65,7 @@ static void Move(Entity* entity, Board& board, int dx, int dy) {
 	board.DeleteEntity(pos[0], pos[1]);
 	board.setEntity(newX, newY, entity);
 }
+
 
 /*
 void run() {

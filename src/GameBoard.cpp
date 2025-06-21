@@ -12,7 +12,7 @@ const char letter[20] = {
 	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
 	'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'
 };
-const int BOARD_SIZE = 20;
+const int BOARD_SIZE = 19;
 const int TILE_SIZE = 32; // Taille de chaque tuile du plateau
 //********************************************************
 

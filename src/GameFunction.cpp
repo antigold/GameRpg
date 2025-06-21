@@ -14,32 +14,30 @@ static void Info(Player* player, std::array<int, 2> position) {
 }
 
 static void MoveRight(Entity* entity, Board& board) {
-	auto pos = entity->getPosition();
-	int newX = pos[0];
-	int newY = pos[1] + 1;
+    auto pos = entity->getPosition();
+    int newX = pos[0];
+    int newY = pos[1] + 1;
 
-	if (newX >= BOARD_SIZE) {
-		newX = 0; 
-	}
-	// Supprime l'entit� de l'ancienne position
-	board.DeleteEntity(pos[0], pos[1]);
+    if (newY >= BOARD_SIZE)
+        newY = 0;
 
-	board.setEntity(newX, newY, entity);
+    board.DeleteEntity(pos[0], pos[1]);
+    board.setEntity(newX, newY, entity);
 }
+
 
 static void MoveLeft(Entity* entity, Board& board) {
-	auto pos = entity->getPosition();
-	int newX = pos[0];
-	int newY = pos[1] - 1;
+    auto pos = entity->getPosition();
+    int newX = pos[0];
+    int newY = pos[1] - 1;
 
-	if (newX < 0) {
-		newX = BOARD_SIZE - 1;
-	}
-	// Supprime l'entit� de l'ancienne position
-	board.DeleteEntity(pos[0], pos[1]);
+    if (newY < 0)
+        newY = BOARD_SIZE - 1;
 
-	board.setEntity(newX, newY, entity);
+    board.DeleteEntity(pos[0], pos[1]);
+    board.setEntity(newX, newY, entity);
 }
+
 
 static void MoveUp(Entity* entity, Board& board) {
 	auto pos = entity->getPosition();

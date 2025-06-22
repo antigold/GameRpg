@@ -1,7 +1,9 @@
 #include <iostream>
 #include <random>
+#include <vector>
+#include "EntitySpawn.hpp"
 
-static std::vector<int> generateRandomPosition(int boardSize) {
+std::vector<int> generateRandomPosition(int boardSize) {
     std::random_device rd; 
     std::mt19937 eng(rd());
     std::uniform_int_distribution<> distr(0, boardSize - 1);

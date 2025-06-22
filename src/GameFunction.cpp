@@ -1,9 +1,8 @@
 #include <iostream>
-#pragma once
-#include <memory>
-#include "GameBoard.cpp"
+#include "GameFunction.hpp"
+#include "Entity.hpp"
 
-static void MoveRight(Entity* entity, Board& board) {
+void MoveRight(Entity* entity, Board& board) {
     auto pos = entity->getPosition();
     int newX = pos[0];
     int newY = pos[1] + 1;
@@ -13,10 +12,11 @@ static void MoveRight(Entity* entity, Board& board) {
 
     board.DeleteEntity(pos[0], pos[1]);
     board.setEntity(newX, newY, entity);
+	entity->setPosition(newX, newY); // Update entity position after moving
 }
 
 
-static void MoveLeft(Entity* entity, Board& board) {
+void MoveLeft(Entity* entity, Board& board) {
     auto pos = entity->getPosition();
     int newX = pos[0];
     int newY = pos[1] - 1;
@@ -26,10 +26,11 @@ static void MoveLeft(Entity* entity, Board& board) {
 
     board.DeleteEntity(pos[0], pos[1]);
     board.setEntity(newX, newY, entity);
+	entity->setPosition(newX, newY);
 }
 
 
-static void MoveUp(Entity* entity, Board& board) {
+void MoveUp(Entity* entity, Board& board) {
 	auto pos = entity->getPosition();
 	int newX = pos[0] - 1;
 	int newY = pos[1];
@@ -37,13 +38,13 @@ static void MoveUp(Entity* entity, Board& board) {
 	if (newX < 0) {
 		newX = BOARD_SIZE - 1;
 	}
-	// Supprime l'entit� de l'ancienne position
 	board.DeleteEntity(pos[0], pos[1]);
 
 	board.setEntity(newX, newY, entity);
+	entity->setPosition(newX, newY);
 }
 
-static void MoveDown(Entity* entity, Board& board) {
+void MoveDown(Entity* entity, Board& board) {
 	auto pos = entity->getPosition();
 	int newX = pos[0] + 1;
 	int newY = pos[1];
@@ -51,51 +52,8 @@ static void MoveDown(Entity* entity, Board& board) {
 	if (newX >= BOARD_SIZE) {
 		newX = 0;
 	}
-	// Supprime l'entit� de l'ancienne position
 	board.DeleteEntity(pos[0], pos[1]);
 
 	board.setEntity(newX, newY, entity);
+	entity->setPosition(newX, newY);
 }
-
-static void Move(Entity* entity, Board& board, int dx, int dy) {
-	auto pos = entity->getPosition();
-	int newX = (pos[0] + dx + BOARD_SIZE) % BOARD_SIZE;
-	int newY = (pos[1] + dy + BOARD_SIZE) % BOARD_SIZE;
-
-	board.DeleteEntity(pos[0], pos[1]);
-	board.setEntity(newX, newY, entity);
-}
-
-
-/*
-void run() {
-	/*
-	Board board;
-	Player* player = new Player(100,50,10,{0,0});
-	std::unique_ptr<Item> item = std::make_unique<Weapon>("Sword", 5, ItemType::WEAPON, WeaponType::SWORD);
-	std::cout << "Welcome to the game!" << std::endl;
-	std::cout << "Game is running..." << std::endl;
-	std::cout << "------------------------" << std::endl;
-
-	board.setEntity(BOARD_SIZE/2, BOARD_SIZE/2, player);
-	auto position = player->getPosition();
-	DisplayBoard(board);
-	player->addItem(std::move(item));
-	Info(player, position);
-	keyboardInput(player, board);
-	position = player->getPosition();
-	DisplayBoard(board);
-	Info(player, position);
-	
-	Board board;
-	Player* player = new Player(100, 50, 10, { 0, 0 });
-	std::unique_ptr<Item> item = std::make_unique<Weapon>("Sword", 5, ItemType::WEAPON, WeaponType::SWORD);
-
-	std::cout << "Welcome to the game!" << std::endl;
-
-	//Just to add smth to test///////////////////
-	board.setEntity(BOARD_SIZE / 2, BOARD_SIZE / 2, player);
-	player->addItem(std::move(item));
-	//////////////////////////////////////
-}
-	*/

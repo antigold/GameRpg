@@ -1,16 +1,18 @@
 #define SDL_MAIN_HANDLED
 #include <iostream>
-#pragma once
-#include"GameFunction.cpp"
-#include "EntitySpawn.cpp"
-#include <SDL.h>
+#include <vector>
 #include <SDL_ttf.h>
+#include <SDL.h>
 #include "input.cpp"
+#include "GameFunction.hpp"
+#include "EntitySpawn.hpp"
 
 int main(int argc, char *argv[]) {
 
+    const std::array<int, 2> DEFAULT_POS = {0, 0};
+
 	Board board;
-	Player* player = new Player(100,50,10,{0,0});
+	Player* player = new Player(100,50,10,DEFAULT_POS);
     Mob* Mob1 = new Mob(50,5,{12,15});
     
 	board.setEntity(BOARD_SIZE/2, BOARD_SIZE/2, player);
@@ -19,8 +21,8 @@ int main(int argc, char *argv[]) {
     
     board.setEntity(randomPos[0],randomPos[1] , Mob1);
 
-    player->addItem(std::make_unique<Weapon>("Sword", 15, ItemType::WEAPON, WeaponType::SWORD));
-    player->addItem(std::make_unique<Weapon>("Bow", 10, ItemType::WEAPON, WeaponType::BOW));
+    player->addItem(std::make_unique<Weapon>("Sword", 15, ItemType::WEAPON, WeaponType::SWORD,DEFAULT_POS));
+    player->addItem(std::make_unique<Weapon>("Bow", 10, ItemType::WEAPON, WeaponType::BOW,DEFAULT_POS));
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         return 1;

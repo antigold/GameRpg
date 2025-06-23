@@ -14,15 +14,17 @@ int main(int argc, char *argv[]) {
 	Board board;
 	Player* player = new Player(100,50,10,DEFAULT_POS);
     Mob* Mob1 = new Mob(50,5,{12,15});
+    Item* Sword = new Weapon("Sword", 15, ItemType::WEAPON, WeaponType::SWORD, DEFAULT_POS);
     
 	board.setEntity(BOARD_SIZE/2, BOARD_SIZE/2, player);
     
-    std::vector<int> randomPos = generateRandomPosition(BOARD_SIZE);
+    std::vector<int> randomPos = generateRandomPosition(BOARD_SIZE, player);
+    std::vector<int> randomPosItem = generateRandomItemPosition(BOARD_SIZE, player);
     
     board.setEntity(randomPos[0],randomPos[1] , Mob1);
+    board.setEntity(randomPosItem[0], randomPosItem[1], Sword);
 
     player->addItem(std::make_unique<Weapon>("Sword", 15, ItemType::WEAPON, WeaponType::SWORD,DEFAULT_POS));
-    player->addItem(std::make_unique<Weapon>("Bow", 10, ItemType::WEAPON, WeaponType::BOW,DEFAULT_POS));
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         return 1;
@@ -68,7 +70,7 @@ int main(int argc, char *argv[]) {
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT)
                 quit = 1;
-			}
+			} 
 		if (is_key_pressed(SDL_SCANCODE_RIGHT)) {
 			MoveRight(player, board);
 		}

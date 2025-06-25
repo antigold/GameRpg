@@ -31,6 +31,13 @@ void Board::setEntity(int x, int y, Entity* entity) {
     }
 }
 
+Entity* Board::getEntity(int x, int y) const {
+    if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
+        return board[x][y];
+    }
+    return nullptr; // retourne nullptr si la position est invalide
+}
+
 void Board::DeleteEntity(int x, int y) {
     if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
         if (board[x][y] != nullptr && board[x][y]->getType() != EntityType::PLAYER) {
@@ -65,6 +72,9 @@ void Board::DrawBoard(SDL_Renderer* renderer) const {
                 break;
             case EntityType::MOB:
                 SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+                break;
+            case EntityType::ITEM:
+                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
                 break;
             default:
                 SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
@@ -135,7 +145,7 @@ void Board::renderPlayerInfo(SDL_Renderer* renderer, TTF_Font* font, Player* pla
     renderText(renderer, font, "Inventory:", x, y, white);
     y += 30;
 
-    const auto& inventory = player->getInventory();
+    auto& inventory = player->getInventory();
     if (inventory.empty()) {
         renderText(renderer, font, " - (Empty)", x + 10, y, white);
     } else {

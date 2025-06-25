@@ -16,6 +16,7 @@ public:
     ~Board();
     void setEntity(int x, int y, Entity* entity);
     void DeleteEntity(int x, int y);
+    Entity* getEntity(int x, int y) const;
     EntityType getEntityType(int x, int y) const;
     void DrawBoard(SDL_Renderer* renderer) const;
     void DrawInfo(SDL_Renderer* renderer, Player* player) const;

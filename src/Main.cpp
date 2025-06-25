@@ -15,16 +15,17 @@ int main(int argc, char *argv[]) {
 	Player* player = new Player(100,50,10,DEFAULT_POS);
     Mob* Mob1 = new Mob(50,5,{12,15});
     Item* Sword = new Weapon("Sword", 15, ItemType::WEAPON, WeaponType::SWORD, DEFAULT_POS);
+    Item* Bow = new Weapon("Bow",10, ItemType::WEAPON, WeaponType::BOW, DEFAULT_POS);
     
 	board.setEntity(BOARD_SIZE/2, BOARD_SIZE/2, player);
     
     std::vector<int> randomPos = generateRandomPosition(BOARD_SIZE, board);
     std::vector<int> randomPosItem = generateRandomItemPosition(BOARD_SIZE, board);
+    std::vector<int> randomPosBow = generateRandomItemPosition(BOARD_SIZE, board);
     
     board.setEntity(randomPos[0],randomPos[1] , Mob1);
     board.setEntity(randomPosItem[0], randomPosItem[1], Sword);
-
-    player->addItem(std::make_unique<Weapon>("Sword", 15, ItemType::WEAPON, WeaponType::SWORD,DEFAULT_POS));
+    board.setEntity(randomPosBow[0], randomPosBow[1], Bow);
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         return 1;

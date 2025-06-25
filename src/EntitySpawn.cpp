@@ -3,7 +3,7 @@
 #include <vector>
 #include "EntitySpawn.hpp"
 
-std::vector<int> generateRandomPosition(int boardSize, Player* player) {
+std::vector<int> generateRandomPosition(int boardSize, Board& board) { //this is more optimized than the previous version
     std::random_device rd; 
     std::mt19937 eng(rd());
     std::uniform_int_distribution<> distr(0, boardSize - 1);
@@ -11,20 +11,29 @@ std::vector<int> generateRandomPosition(int boardSize, Player* player) {
     int x = distr(eng);
     int y = distr(eng);
 
-    if (x == player->getPosition()[0] && y == player->getPosition()[1]) {
-        return {0,0};
+    if (board.getEntityType(x, y) == EntityType::PLAYER) {
+        // Use a loop instead of recursion to avoid ambiguity and stack overflow
+        do {
+            x = distr(eng);
+            y = distr(eng);
+        } while (board.getEntityType(x, y) == EntityType::PLAYER);
     }
     return {x, y};
 }
 
-std::vector<int> generateRandomItemPosition(int boatdsize, Player* player) {
+std::vector<int> generateRandomItemPosition(int boatdsize, Board& board) {
     std::random_device rd; 
     std::mt19937 eng(rd());
     std::uniform_int_distribution<> distr(0, boatdsize - 1);
     int x = distr(eng);
     int y = distr(eng);
-    if (x == player->getPosition()[0] && y == player->getPosition()[1]) {
-        return {18, 18};
+    if (board.getEntityType(x, y) != EntityType::VOID) {
+        // Use a loop instead of recursion to avoid ambiguity and stack overflow
+        do {
+            x = distr(eng);
+            y = distr(eng);
+        } while (board.getEntityType(x, y) != EntityType::VOID);
     }
+    
     return {x, y};
 }

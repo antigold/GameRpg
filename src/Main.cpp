@@ -18,8 +18,8 @@ int main(int argc, char *argv[]) {
     
 	board.setEntity(BOARD_SIZE/2, BOARD_SIZE/2, player);
     
-    std::vector<int> randomPos = generateRandomPosition(BOARD_SIZE, player);
-    std::vector<int> randomPosItem = generateRandomItemPosition(BOARD_SIZE, player);
+    std::vector<int> randomPos = generateRandomPosition(BOARD_SIZE, board);
+    std::vector<int> randomPosItem = generateRandomItemPosition(BOARD_SIZE, board);
     
     board.setEntity(randomPos[0],randomPos[1] , Mob1);
     board.setEntity(randomPosItem[0], randomPosItem[1], Sword);

@@ -11,21 +11,11 @@ enum class EntityType {
     VOID
 };
 
-enum class ItemType {
-    HEAL,
-    WEAPON
-};
-
-enum class WeaponType {
-    SWORD,
-    BOW
-};
-
 class Entity {
 private:
     EntityType type;
-    double attack;
     double hp;
+    double attack;
     std::array<int,2> Position;
 public:
     Entity(EntityType t, double hp, double attack, std::array<int,2> pos);
@@ -45,14 +35,12 @@ public:
 class Item : public Entity {
 private:
     std::string name;
-    ItemType type;
 public:
-    Item(const std::string& itemName, ItemType type, std::array<int,2> pos);
+    Item(const std::string& itemName,std::array<int,2> pos);
     virtual ~Item() override;
 
     std::string getName() const;
     void setName(const std::string& newName);
-    ItemType getItemType() const;
 };
 
 class Player : public Entity {
@@ -97,7 +85,7 @@ class Heal : public Item {
 private:
     double healAmount;
 public:
-    Heal(const std::string& itemName, double amount, ItemType type, std::array<int,2> pos);
+    Heal(const std::string& itemName, double healamount,std::array<int,2> pos);
     double getHealAmount() const;
     void setHealAmount(double newAmount);
 };
@@ -105,10 +93,22 @@ public:
 class Weapon : public Item {
 private:
     double attackPoints;
-    WeaponType weaponType;
 public:
-    Weapon(const std::string& itemName, double attack, ItemType type, WeaponType Wtype, std::array<int,2> pos);
+    Weapon(const std::string& itemName, double attack,std::array<int,2> pos);
     double getAttackPoints() const;
     void setAttackPoints(double newAttack);
-    WeaponType getWeaponType() const;
+};
+
+class Sword : public Weapon {
+public:
+    Sword(const std::string& itemName, double attack, std::array<int,2> pos);
+};
+
+class Bow : public Weapon {
+private:
+    double range;
+public:
+    Bow(const std::string& itemName, double attack, double range, std::array<int,2> pos);
+    double getRange() const;
+    void setRange(double newRange);
 };

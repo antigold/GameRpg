@@ -26,14 +26,13 @@ std::array<int, 2> Entity::getPosition() {
 
 EntityType Entity::getType() const { return type; }
 
-Item::Item(const std::string& itemName, ItemType type, std::array<int,2> pos)
-    : Entity(EntityType::ITEM, 0, 0, pos), name(itemName), type(type) {}
+Item::Item(const std::string& itemName,std::array<int,2> pos)
+    : Entity(EntityType::ITEM, 0, 0, pos), name(itemName) {}
 
 Item::~Item() = default;
 
 std::string Item::getName() const { return name; }
 void Item::setName(const std::string& newName) { name = newName; }
-ItemType Item::getItemType() const { return type; }
 
 Player::Player() : Entity(EntityType::PLAYER, 100, 10, {0,0}), defense(5), xp(0), level(1) {}
 Player::Player(double hp, double attack, double defense, std::array<int,2> pos)
@@ -109,8 +108,8 @@ Mob::Mob(double hp, double attack, std::array<int,2> pos) : Entity(EntityType::M
 
 Void::Void(const std::array<int, 2>& pos) : Entity(EntityType::VOID, 0, 0, pos) {}
 
-Heal::Heal(const std::string& itemName, double amount, ItemType type, std::array<int,2> pos)
-    : Item(itemName, type, pos), healAmount(amount) {
+Heal::Heal(const std::string& itemName, double amount, std::array<int,2> pos)
+    : Item(itemName,pos), healAmount(amount) {
     if (amount < 0) {
         std::cerr << "Heal amount cannot be negative. Setting to 0." << std::endl;
         healAmount = 0;
@@ -126,8 +125,8 @@ void Heal::setHealAmount(double newAmount) {
     healAmount = newAmount;
 }
 
-Weapon::Weapon(const std::string& itemName, double attack, ItemType type, WeaponType Wtype, std::array<int,2> pos)
-    : Item(itemName, type, pos), attackPoints(attack), weaponType(Wtype) {
+Weapon::Weapon(const std::string& itemName, double attack, std::array<int,2> pos)
+    : Item(itemName,pos), attackPoints(attack) {
     if (attack < 0) {
         std::cerr << "Attack points cannot be negative. Setting to 0." << std::endl;
         attackPoints = 0;
@@ -143,4 +142,21 @@ void Weapon::setAttackPoints(double newAttack) {
     attackPoints = newAttack;
 }
 
-WeaponType Weapon::getWeaponType() const { return weaponType; }
+Sword::Sword(const std::string& itemName, double attack, std::array<int,2> pos)
+    : Weapon(itemName, attack, pos) {}
+
+Bow::Bow(const std::string& itemName, double attack, double range, std::array<int,2> pos)
+    : Weapon(itemName, attack, pos), range(range) {
+    if (range < 0) {
+        std::cerr << "Range cannot be negative. Setting to 0." << std::endl;
+        range = 3; //Default range 
+    }
+}
+
+double Bow::getRange() const { return range; }
+void Bow::setRange(double newRange) {
+    if (newRange < 0) {
+        std::cerr << "Range cannot be negative. Setting to 0." << std::endl;
+        newRange = 3; //Default range 
+    }
+}

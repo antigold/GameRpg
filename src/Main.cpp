@@ -3,6 +3,7 @@
 #include <vector>
 #include <SDL_ttf.h>
 #include <SDL.h>
+#include <SDL_image.h>
 #include "input.cpp"
 #include "GameFunction.hpp"
 #include "EntitySpawn.hpp"
@@ -44,6 +45,15 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    SDL_Surface* PlayerSurface = IMG_Load("assets/images/Miku_forgor.png");
+    if (!PlayerSurface) {
+        std::cerr << "Failed to load player image: " << IMG_GetError() << std::endl;
+        TTF_CloseFont(font);
+        TTF_Quit();
+        SDL_Quit();
+        return 1;
+    }
+
     SDL_Window *window = SDL_CreateWindow("Mini game RPG AlphaTest",
                                           SDL_WINDOWPOS_CENTERED,
                                           SDL_WINDOWPOS_CENTERED,
@@ -65,6 +75,9 @@ int main(int argc, char *argv[]) {
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
 
+    SDL_Texture* playerTexture = SDL_CreateTextureFromSurface(renderer, PlayerSurface);
+    SDL_FreeSurface(PlayerSurface); // libère la surface après avoir créé la texture
+
     SDL_Event e;
     int quit = 0;
     while (!quit) {
@@ -84,7 +97,7 @@ int main(int argc, char *argv[]) {
 		if (is_key_pressed(SDL_SCANCODE_DOWN)) {
 			MoveDown(player, board);
 		}
-		board.DrawBoard(renderer);
+		board.DrawBoard(renderer, playerTexture);
 		board.DrawInfo(renderer, player);
         board.renderPlayerInfo(renderer,font,player);
 		SDL_RenderPresent(renderer);

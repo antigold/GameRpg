@@ -58,7 +58,7 @@ EntityType Board::getEntityType(int x, int y) const {
     return EntityType::VOID;
 }
 
-void Board::DrawBoard(SDL_Renderer* renderer) const {
+void Board::DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture) const {
     for (int i = 0; i < BOARD_SIZE; ++i) {
         for (int j = 0; j < BOARD_SIZE; ++j) {
             SDL_Rect cell = { j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE };
@@ -68,8 +68,14 @@ void Board::DrawBoard(SDL_Renderer* renderer) const {
                 SDL_SetRenderDrawColor(renderer, 240, 240, 240, 255);
                 break;
             case EntityType::PLAYER:
-                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-                break;
+                if (PlayerTexture) {
+                    SDL_RenderCopy(renderer, PlayerTexture, nullptr, &cell);
+                } else {
+                    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // fallback
+                    SDL_RenderFillRect(renderer, &cell);
+                }
+                continue; // éviter de remplir deux fois la case
+
             case EntityType::MOB:
                 SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
                 break;

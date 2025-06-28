@@ -105,9 +105,6 @@ void Board::DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Text
             case EntityType::MOB:
                 SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
                 break;
-            case EntityType::ITEM:
-                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-                break;
             default:
                 SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
                 break;

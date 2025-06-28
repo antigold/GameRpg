@@ -67,26 +67,26 @@ void Board::DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Text
 
             if (entity && getEntityType(i, j) == EntityType::ITEM) {
                 if (auto* sword = dynamic_cast<Sword*>(entity)) {
-                    if (SwordTexture) {
-                        SDL_RenderCopy(renderer, SwordTexture, nullptr, &cell);
-                    } else {
+                    if (!SwordTexture) {
                         SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
                         SDL_RenderFillRect(renderer, &cell);
                     }
+                    SDL_RenderCopy(renderer, SwordTexture, nullptr, &cell);
+                    sword = nullptr;
+                    
                 }
                 else if (auto* bow = dynamic_cast<Bow*>(entity)) {
-                    if (BowTexture) {
-                        SDL_RenderCopy(renderer, BowTexture, nullptr, &cell);
-                    } else {
+                    if (!BowTexture) {
                         SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
                         SDL_RenderFillRect(renderer, &cell);
                     }
+                    SDL_RenderCopy(renderer, BowTexture, nullptr, &cell);
+                    bow = nullptr;
                 }
                 else {
                     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // couleur par défaut pour les items
                 }
-            
-            continue;
+                continue;
             }
 
             switch (getEntityType(i, j)) {

@@ -54,6 +54,25 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    SDL_Surface* SwordSurface = IMG_Load("assets/images/minecraft_sword.jpg");
+    if (!SwordSurface) {
+        std::cerr << "Failed to load sword image: " << IMG_GetError() << std::endl;
+        TTF_CloseFont(font);
+        TTF_Quit();
+        SDL_Quit();
+        return 1;
+    }
+
+    SDL_Surface* BowSurface = IMG_Load("assets/images/Minecraft_bow.jpg");
+    if (!BowSurface) {
+        std::cerr << "Failed to load bow image: " << IMG_GetError() << std::endl;
+        SDL_FreeSurface(SwordSurface);
+        TTF_CloseFont(font);
+        TTF_Quit();
+        SDL_Quit();
+        return 1;
+    }
+
     SDL_Window *window = SDL_CreateWindow("Mini game RPG AlphaTest",
                                           SDL_WINDOWPOS_CENTERED,
                                           SDL_WINDOWPOS_CENTERED,
@@ -76,7 +95,11 @@ int main(int argc, char *argv[]) {
     SDL_RenderPresent(renderer);
 
     SDL_Texture* playerTexture = SDL_CreateTextureFromSurface(renderer, PlayerSurface);
+    SDL_Texture* swordTexture = SDL_CreateTextureFromSurface(renderer, SwordSurface);
+    SDL_Texture* bowTexture = SDL_CreateTextureFromSurface(renderer, BowSurface);
     SDL_FreeSurface(PlayerSurface); // libère la surface après avoir créé la texture
+    SDL_FreeSurface(SwordSurface);
+    SDL_FreeSurface(BowSurface);
 
     SDL_Event e;
     int quit = 0;
@@ -97,7 +120,7 @@ int main(int argc, char *argv[]) {
 		if (is_key_pressed(SDL_SCANCODE_DOWN)) {
 			MoveDown(player, board);
 		}
-		board.DrawBoard(renderer, playerTexture);
+		board.DrawBoard(renderer, playerTexture,swordTexture,bowTexture);
 		board.DrawInfo(renderer, player);
         board.renderPlayerInfo(renderer,font,player);
 		SDL_RenderPresent(renderer);

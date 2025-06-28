@@ -25,6 +25,8 @@ public:
     double getAttack();
     void setHp(double newHp);
     void setAttack(double newAttack);
+    bool isAlive() const;
+    virtual std::string getClassName() const;
 
     void setPosition(int x, int y);
     std::array<int, 2> getPosition();
@@ -74,6 +76,7 @@ class Mob : public Entity {
 public:
     Mob();
     Mob(double hp, double attack, std::array<int,2> pos);
+    virtual std::string getClassName() const override;
 };
 
 class Void : public Entity {
@@ -88,6 +91,7 @@ public:
     Heal(const std::string& itemName, double healamount,std::array<int,2> pos);
     double getHealAmount() const;
     void setHealAmount(double newAmount);
+    virtual std::string getClassName() const override;
 };
 
 class Weapon : public Item {
@@ -102,6 +106,7 @@ public:
 class Sword : public Weapon {
 public:
     Sword(const std::string& itemName, double attack, std::array<int,2> pos);
+    virtual std::string getClassName() const override;
 };
 
 class Bow : public Weapon {
@@ -111,4 +116,5 @@ public:
     Bow(const std::string& itemName, double attack, double range, std::array<int,2> pos);
     double getRange() const;
     void setRange(double newRange);
+    virtual std::string getClassName() const override;
 };

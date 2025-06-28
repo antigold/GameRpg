@@ -58,10 +58,36 @@ EntityType Board::getEntityType(int x, int y) const {
     return EntityType::VOID;
 }
 
-void Board::DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture) const {
+void Board::DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Texture* SwordTexture,SDL_Texture* BowTexture) const {
     for (int i = 0; i < BOARD_SIZE; ++i) {
         for (int j = 0; j < BOARD_SIZE; ++j) {
             SDL_Rect cell = { j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE };
+
+            Entity* entity = getEntity(i, j);
+
+            if (entity && getEntityType(i, j) == EntityType::ITEM) {
+                if (auto* sword = dynamic_cast<Sword*>(entity)) {
+                    if (SwordTexture) {
+                        SDL_RenderCopy(renderer, SwordTexture, nullptr, &cell);
+                    } else {
+                        SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
+                        SDL_RenderFillRect(renderer, &cell);
+                    }
+                }
+                else if (auto* bow = dynamic_cast<Bow*>(entity)) {
+                    if (BowTexture) {
+                        SDL_RenderCopy(renderer, BowTexture, nullptr, &cell);
+                    } else {
+                        SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
+                        SDL_RenderFillRect(renderer, &cell);
+                    }
+                }
+                else {
+                    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // couleur par défaut pour les items
+                }
+            
+            continue;
+            }
 
             switch (getEntityType(i, j)) {
             case EntityType::VOID:

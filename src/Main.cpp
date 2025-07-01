@@ -8,7 +8,7 @@ int main(int argc, char *argv[]) {
 
 	Board board;
 	Player* player = new Player(100,50,10,DEFAULT_POS);
-    Mob* Mob1 = new Mob(50,5,{12,15});
+    Mob* Mob1 = new Mob("Teto",50,5,{12,15});
     Item* Sword_ = new Sword("Sword",5,DEFAULT_POS);
     Item* Bow_ = new Bow("Bow",2,5,DEFAULT_POS);
     
@@ -130,9 +130,9 @@ int main(int argc, char *argv[]) {
 		}
 		board.DrawBoard(renderer, playerTexture,swordTexture,bowTexture,mobTexture);
 		board.DrawInfo(renderer, player);
-        board.renderPlayerInfo(renderer,font,player);
+        board.renderPlayerInfo(renderer,font,player,board);
 		SDL_RenderPresent(renderer);
-        SDL_Delay(92);
+        SDL_Delay(80);
     }
 
     SDL_DestroyRenderer(renderer);

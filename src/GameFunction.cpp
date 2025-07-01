@@ -1,6 +1,7 @@
 #include <iostream>
 #include "GameFunction.hpp"
 #include "Entity.hpp"
+#include "GameBoard.hpp"
 
 void MoveRight(Entity* entity, Board& board) {
     auto pos = entity->getPosition();
@@ -93,4 +94,34 @@ void CollectItem(Player* player, Board& board, int x, int y) {
         board.setEntity(x, y, nullptr); // Remove from board
         player->addItem(std::unique_ptr<Item>(item));
     }
+}
+
+bool IsPlayerNearMob(Player* player, Board& board) {
+	auto playerPos = player->getPosition();
+	for (int x = playerPos[0] - 1; x <= playerPos[0] + 1; ++x) {
+		for (int y = playerPos[1] - 1; y <= playerPos[1] + 1; ++y) {
+			if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
+				Entity* entity = board.getEntity(x, y);
+				if (entity && entity->getType() == EntityType::MOB) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+Mob* getNearMob(Player* player, Board& board) {
+	auto playerPos = player->getPosition();
+	for (int x = playerPos[0] - 1; x <= playerPos[0] + 1; ++x) {
+		for (int y = playerPos[1] - 1; y <= playerPos[1] + 1; ++y) {
+			if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
+				Entity* entity = board.getEntity(x, y);
+				if (entity && entity->getType() == EntityType::MOB) {
+					return dynamic_cast<Mob*>(entity);
+				}
+			}
+		}
+	}
+	return nullptr;
 }

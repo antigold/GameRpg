@@ -73,9 +73,12 @@ public:
 };
 
 class Mob : public Entity {
+private:
+    std::string mobname;
 public:
-    Mob();
-    Mob(double hp, double attack, std::array<int,2> pos);
+    Mob(const std::string& name, double hp, double attack, std::array<int,2> pos);
+    std::string getMobName() const;
+    void setMobName(const std::string& newName);
     virtual std::string getClassName() const override;
 };
 

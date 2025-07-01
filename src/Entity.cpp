@@ -115,9 +115,10 @@ void Player::displayXp() {
 
 //|================================|Class Mob|======================================|
 
-Mob::Mob() : Entity(EntityType::MOB, 50, 5, {0,0}) {}
-Mob::Mob(double hp, double attack, std::array<int,2> pos) : Entity(EntityType::MOB, hp, attack, pos) {}
+Mob::Mob(const std::string& name, double hp, double attack, std::array<int,2> pos) : Entity(EntityType::MOB, hp, attack, pos), mobname(name) {}
 std::string Mob::getClassName() const { return "Mob"; }
+std::string Mob::getMobName() const { return mobname; }
+void Mob::setMobName(const std::string& newName) { mobname = newName; }
 
 //|================================|Class Void|======================================|
 

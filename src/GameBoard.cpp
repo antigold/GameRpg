@@ -146,10 +146,11 @@ void Board::renderText(SDL_Renderer* renderer, TTF_Font* font, const std::string
 	SDL_DestroyTexture(texture);
 }
 
-void Board::renderPlayerInfo(SDL_Renderer* renderer, TTF_Font* font, Player* player) {
+void Board::renderPlayerInfo(SDL_Renderer* renderer, TTF_Font* font, Player* player, Board& board) {
     if (!player) return;
 
     SDL_Color white = {255, 255, 255, 255};
+    SDL_Color red = {255, 0, 0, 255};
     int x = BOARD_SIZE * TILE_SIZE + 10;
     int y = 10;
 
@@ -174,6 +175,16 @@ void Board::renderPlayerInfo(SDL_Renderer* renderer, TTF_Font* font, Player* pla
 
     oss << "XP: " << player->getXp() << " | Level: " << player->getLevel();
     renderText(renderer, font, oss.str(), x, y, white);
+    y += 30; oss.str(""); oss.clear();
+    
+    renderText(renderer, font, "near Mob:", x , y, white);
+    if (IsPlayerNearMob(player,board)) {
+        auto mob = getNearMob(player,board);
+        oss << " - " << mob->getMobName() << " (HP: " << mob->getHp() << ")";
+        renderText(renderer, font, oss.str(), x + 100, y, red);
+    } else {
+        renderText(renderer, font, " - None", x + 100, y, white);
+    }
     y += 30; oss.str(""); oss.clear();
 
     renderText(renderer, font, "Inventory:", x, y, white);

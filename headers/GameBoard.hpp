@@ -5,6 +5,7 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include "Entity.hpp"
+#include "GameFunction.hpp"
 
 const int BOARD_SIZE = 19;
 const int TILE_SIZE = 32;
@@ -21,6 +22,6 @@ public:
     EntityType getEntityType(int x, int y) const;
     void DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Texture* SwordTexture,SDL_Texture* BowTexture, SDL_Texture* MobTexture) const;
     void DrawInfo(SDL_Renderer* renderer, Player* player) const;
-    void renderPlayerInfo(SDL_Renderer* renderer, TTF_Font* font, Player* player);
+    void renderPlayerInfo(SDL_Renderer* renderer, TTF_Font* font, Player* player,Board& board);
     void renderText(SDL_Renderer* renderer, TTF_Font* font, const std::string& text, int x, int y, SDL_Color color);
 };

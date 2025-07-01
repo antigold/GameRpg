@@ -3,27 +3,52 @@
 #include "Entity.hpp"
 #include "GameBoard.hpp"
 
+void HealPlayer(Player* player, double amount) {
+	if (amount < 0) {
+		return;
+	}
+	player->setHp(player->getHp() + amount);
+}
+
+void HealPlayerOnItem(Player* player, Board& board, int x, int y) {
+	Entity* entity = board.getEntity(x, y);
+	Heal* healItem = dynamic_cast<Heal*>(entity);
+	if (healItem) {
+		HealPlayer(player, healItem->getHealAmount());
+		board.DeleteEntity(x, y); // Remove the heal item from the board
+	}
+}
+
 void MoveRight(Entity* entity, Board& board) {
-    auto pos = entity->getPosition();
+    Player* player = dynamic_cast<Player*>(entity);
+    if (!player) return; // Sécurité : ne rien faire si pas un joueur
+
+    auto pos = player->getPosition();
     int newX = pos[0];
     int newY = pos[1] + 1;
     if (newY >= BOARD_SIZE) newY = 0;
 
     if (board.getEntityType(newX, newY) == EntityType::ITEM) {
-        Player* player = dynamic_cast<Player*>(entity);
-        if (player) {
-			CollectItem(player, board, newX, newY);
-		}
+        CollectItem(player, board, newX, newY);
     }
 
-    board.setEntity(newX, newY, entity);
+    Entity* target = board.getEntity(newX, newY);
+    if (auto* heal = dynamic_cast<Heal*>(target)) {
+        HealPlayerOnItem(player, board, newX, newY);
+        delete heal;
+    }
+    delete target;
+
+    board.setEntity(newX, newY, player);
     board.setEntity(pos[0], pos[1], nullptr);
-    entity->setPosition(newX, newY);
+    player->setPosition(newX, newY);
 }
 
 
 void MoveLeft(Entity* entity, Board& board) {
-    auto pos = entity->getPosition();
+	Player* player = dynamic_cast<Player*>(entity);
+    if (!player) return;
+    auto pos = player->getPosition();
     int newX = pos[0];
     int newY = pos[1] - 1;
 
@@ -32,20 +57,27 @@ void MoveLeft(Entity* entity, Board& board) {
 	}
 
 	if  (board.getEntityType(newX, newY) == EntityType::ITEM){
-		Player* player = dynamic_cast<Player*>(entity);
 		if (player) {
 			CollectItem(player, board,newX,newY);
 		}
 	}
+	Entity* target = board.getEntity(newX, newY);
+	if (auto* heal = dynamic_cast<Heal*>(target)) {
+		HealPlayerOnItem(player, board, newX, newY);
+		delete heal;
+	}
+	delete target;
 
-    board.setEntity(newX, newY, entity);
+    board.setEntity(newX, newY, player);
 	board.setEntity(pos[0], pos[1], nullptr); // Clear old position
-	entity->setPosition(newX, newY);
+	player->setPosition(newX, newY);
 }
 
 
 void MoveUp(Entity* entity, Board& board) {
-	auto pos = entity->getPosition();
+	Player* player = dynamic_cast<Player*>(entity);
+    if (!player) return;
+	auto pos = player->getPosition();
 	int newX = pos[0] - 1;
 	int newY = pos[1];
 
@@ -54,38 +86,51 @@ void MoveUp(Entity* entity, Board& board) {
 	}
 
 	if  (board.getEntityType(newX, newY) == EntityType::ITEM){
-		Player* player = dynamic_cast<Player*>(entity);
 		if (player) {
 			CollectItem(player, board,newX,newY);
 		}
 	}
+	Entity* target = board.getEntity(newX, newY);
+	if (auto* heal = dynamic_cast<Heal*>(target)) {
+		HealPlayerOnItem(player, board, newX, newY);
+		delete heal;
+	}
+	delete target;
 	
 
-	board.setEntity(newX, newY, entity);
+	board.setEntity(newX, newY, player);
 	board.setEntity(pos[0], pos[1], nullptr); // Clear old position
-	entity->setPosition(newX, newY);
+	player->setPosition(newX, newY);
 }
 
 void MoveDown(Entity* entity, Board& board) {
-	auto pos = entity->getPosition();
-	int newX = pos[0] + 1;
-	int newY = pos[1];
+    Player* player = dynamic_cast<Player*>(entity);
+    if (!player) return;
 
-	if (newX >= BOARD_SIZE) {
-		newX = 0;
-	}
+    auto pos = player->getPosition();
+    int newX = pos[0] + 1;
+    int newY = pos[1];
 
-	if  (board.getEntityType(newX, newY) == EntityType::ITEM){
-		Player* player = dynamic_cast<Player*>(entity);
-		if (player) {
-			CollectItem(player, board,newX,newY);
-		}
-	}
+    if (newX >= BOARD_SIZE) {
+        newX = 0;
+    }
 
-	board.setEntity(newX, newY, entity);
-	board.setEntity(pos[0], pos[1], nullptr); // Clear old position
-	entity->setPosition(newX, newY);
+    if (board.getEntityType(newX, newY) == EntityType::ITEM) {
+        CollectItem(player, board, newX, newY);
+    }
+
+    Entity* target = board.getEntity(newX, newY);
+    if (auto* heal = dynamic_cast<Heal*>(target)) {
+        HealPlayerOnItem(player, board, newX, newY);
+        delete heal;
+    }
+    delete target;
+
+    board.setEntity(newX, newY, player);
+    board.setEntity(pos[0], pos[1], nullptr); // Clear old position
+    player->setPosition(newX, newY);
 }
+
 
 void CollectItem(Player* player, Board& board, int x, int y) {
     Entity* entity = board.getEntity(x, y);
@@ -124,20 +169,4 @@ Mob* getNearMob(Player* player, Board& board) {
 		}
 	}
 	return nullptr;
-}
-
-void HealPlayer(Player* player, double amount) {
-	if (amount < 0) {
-		return;
-	}
-	player->setHp(player->getHp() + amount);
-}
-
-void HealPlayerOnItem(Player* player, Board& board, int x, int y) {
-	Entity* entity = board.getEntity(x, y);
-	Heal* healItem = dynamic_cast<Heal*>(entity);
-	if (healItem) {
-		HealPlayer(player, healItem->getHealAmount());
-		board.DeleteEntity(x, y); // Remove the heal item from the board
-	}
 }

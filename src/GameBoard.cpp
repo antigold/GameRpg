@@ -58,7 +58,7 @@ EntityType Board::getEntityType(int x, int y) const {
     return EntityType::VOID;
 }
 
-void Board::DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Texture* SwordTexture,SDL_Texture* BowTexture) const {
+void Board::DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Texture* SwordTexture,SDL_Texture* BowTexture, SDL_Texture* MobTexture) const {
     for (int i = 0; i < BOARD_SIZE; ++i) {
         for (int j = 0; j < BOARD_SIZE; ++j) {
             SDL_Rect cell = { j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE };
@@ -91,7 +91,7 @@ void Board::DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Text
 
             switch (getEntityType(i, j)) {
             case EntityType::VOID:
-                SDL_SetRenderDrawColor(renderer, 240, 240, 240, 255);
+                SDL_SetRenderDrawColor(renderer, 255, 255, 233, 0); // couleur pour les cases vides
                 break;
             case EntityType::PLAYER:
                 if (PlayerTexture) {
@@ -103,8 +103,13 @@ void Board::DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Text
                 continue; // éviter de remplir deux fois la case
 
             case EntityType::MOB:
-                SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
-                break;
+                if (MobTexture) {
+                    SDL_RenderCopy(renderer, MobTexture, nullptr, &cell);
+                } else {
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+                    SDL_RenderFillRect(renderer, &cell);
+                }
+                continue;
             default:
                 SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
                 break;

@@ -19,7 +19,7 @@ public:
     void DeleteEntity(int x, int y);
     Entity* getEntity(int x, int y) const;
     EntityType getEntityType(int x, int y) const;
-    void DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Texture* SwordTexture,SDL_Texture* BowTexture) const;
+    void DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Texture* SwordTexture,SDL_Texture* BowTexture, SDL_Texture* MobTexture) const;
     void DrawInfo(SDL_Renderer* renderer, Player* player) const;
     void renderPlayerInfo(SDL_Renderer* renderer, TTF_Font* font, Player* player);
     void renderText(SDL_Renderer* renderer, TTF_Font* font, const std::string& text, int x, int y, SDL_Color color);

@@ -1,16 +1,9 @@
 #define SDL_MAIN_HANDLED
 #include <iostream>
-#include <vector>
-#include <SDL_ttf.h>
-#include <SDL.h>
-#include <SDL_image.h>
-#include "input.cpp"
-#include "GameFunction.hpp"
-#include "EntitySpawn.hpp"
+#include "Main.hpp"
 
 int main(int argc, char *argv[]) {
 
-    const std::array<int, 2> DEFAULT_POS = {0, 0};
 
 	Board board;
 	Player* player = new Player(100,50,10,DEFAULT_POS);
@@ -73,6 +66,17 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    SDL_Surface* MobSurface = IMG_Load("assets/images/Fatass.jpg");
+    if (!MobSurface) {
+        std::cerr << "Failed to load mob image: " << IMG_GetError() << std::endl;
+        SDL_FreeSurface(BowSurface);
+        SDL_FreeSurface(SwordSurface);
+        TTF_CloseFont(font);
+        TTF_Quit();
+        SDL_Quit();
+        return 1;
+    }
+
     SDL_Window *window = SDL_CreateWindow("Mini game RPG AlphaTest",
                                           SDL_WINDOWPOS_CENTERED,
                                           SDL_WINDOWPOS_CENTERED,
@@ -97,9 +101,12 @@ int main(int argc, char *argv[]) {
     SDL_Texture* playerTexture = SDL_CreateTextureFromSurface(renderer, PlayerSurface);
     SDL_Texture* swordTexture = SDL_CreateTextureFromSurface(renderer, SwordSurface);
     SDL_Texture* bowTexture = SDL_CreateTextureFromSurface(renderer, BowSurface);
+    SDL_Texture* mobTexture = SDL_CreateTextureFromSurface(renderer, MobSurface);
     SDL_FreeSurface(PlayerSurface); // libère la surface après avoir créé la texture
     SDL_FreeSurface(SwordSurface);
     SDL_FreeSurface(BowSurface);
+    SDL_FreeSurface(MobSurface);
+
 
     SDL_Event e;
     int quit = 0;
@@ -120,7 +127,7 @@ int main(int argc, char *argv[]) {
 		if (is_key_pressed(SDL_SCANCODE_DOWN)) {
 			MoveDown(player, board);
 		}
-		board.DrawBoard(renderer, playerTexture,swordTexture,bowTexture);
+		board.DrawBoard(renderer, playerTexture,swordTexture,bowTexture,mobTexture);
 		board.DrawInfo(renderer, player);
         board.renderPlayerInfo(renderer,font,player);
 		SDL_RenderPresent(renderer);

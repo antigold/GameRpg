@@ -1,6 +1,7 @@
 #define SDL_MAIN_HANDLED
 #include <iostream>
 #include "Main.hpp"
+#include "input.cpp"
 
 int main(int argc, char *argv[]) {
 
@@ -131,7 +132,7 @@ int main(int argc, char *argv[]) {
 		board.DrawInfo(renderer, player);
         board.renderPlayerInfo(renderer,font,player);
 		SDL_RenderPresent(renderer);
-        SDL_Delay(90);
+        SDL_Delay(92);
     }
 
     SDL_DestroyRenderer(renderer);

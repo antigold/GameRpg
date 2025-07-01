@@ -15,7 +15,6 @@ void HealPlayerOnItem(Player* player, Board& board, int x, int y) {
 	Heal* healItem = dynamic_cast<Heal*>(entity);
 	if (healItem) {
 		HealPlayer(player, healItem->getHealAmount());
-		board.DeleteEntity(x, y); // Remove the heal item from the board
 	}
 }
 
@@ -28,16 +27,13 @@ void MoveRight(Entity* entity, Board& board) {
     int newY = pos[1] + 1;
     if (newY >= BOARD_SIZE) newY = 0;
 
-    if (board.getEntityType(newX, newY) == EntityType::ITEM) {
-        CollectItem(player, board, newX, newY);
-    }
-
-    Entity* target = board.getEntity(newX, newY);
-    if (auto* heal = dynamic_cast<Heal*>(target)) {
-        HealPlayerOnItem(player, board, newX, newY);
-        delete heal;
-    }
-    delete target;
+	Entity* target = board.getEntity(newX, newY);
+	if (auto* heal = dynamic_cast<Heal*>(target)) {
+    	HealPlayerOnItem(player, board, newX, newY);
+    	delete heal;
+	} else if (board.getEntityType(newX, newY) == EntityType::ITEM) {
+    	CollectItem(player, board, newX, newY);
+	}
 
     board.setEntity(newX, newY, player);
     board.setEntity(pos[0], pos[1], nullptr);
@@ -56,17 +52,13 @@ void MoveLeft(Entity* entity, Board& board) {
         newY = BOARD_SIZE - 1;
 	}
 
-	if  (board.getEntityType(newX, newY) == EntityType::ITEM){
-		if (player) {
-			CollectItem(player, board,newX,newY);
-		}
-	}
 	Entity* target = board.getEntity(newX, newY);
 	if (auto* heal = dynamic_cast<Heal*>(target)) {
-		HealPlayerOnItem(player, board, newX, newY);
-		delete heal;
+    	HealPlayerOnItem(player, board, newX, newY);
+    	delete heal;
+	} else if (board.getEntityType(newX, newY) == EntityType::ITEM) {
+    	CollectItem(player, board, newX, newY);
 	}
-	delete target;
 
     board.setEntity(newX, newY, player);
 	board.setEntity(pos[0], pos[1], nullptr); // Clear old position
@@ -85,19 +77,14 @@ void MoveUp(Entity* entity, Board& board) {
 		newX = BOARD_SIZE - 1;
 	}
 
-	if  (board.getEntityType(newX, newY) == EntityType::ITEM){
-		if (player) {
-			CollectItem(player, board,newX,newY);
-		}
-	}
 	Entity* target = board.getEntity(newX, newY);
 	if (auto* heal = dynamic_cast<Heal*>(target)) {
-		HealPlayerOnItem(player, board, newX, newY);
-		delete heal;
+    	HealPlayerOnItem(player, board, newX, newY);
+    	delete heal;
+	} else if (board.getEntityType(newX, newY) == EntityType::ITEM) {
+    	CollectItem(player, board, newX, newY);
 	}
-	delete target;
 	
-
 	board.setEntity(newX, newY, player);
 	board.setEntity(pos[0], pos[1], nullptr); // Clear old position
 	player->setPosition(newX, newY);
@@ -115,16 +102,14 @@ void MoveDown(Entity* entity, Board& board) {
         newX = 0;
     }
 
-    if (board.getEntityType(newX, newY) == EntityType::ITEM) {
-        CollectItem(player, board, newX, newY);
-    }
-
     Entity* target = board.getEntity(newX, newY);
-    if (auto* heal = dynamic_cast<Heal*>(target)) {
-        HealPlayerOnItem(player, board, newX, newY);
-        delete heal;
-    }
-    delete target;
+	if (auto* heal = dynamic_cast<Heal*>(target)) {
+    	HealPlayerOnItem(player, board, newX, newY);
+    	delete heal;
+	} else if (board.getEntityType(newX, newY) == EntityType::ITEM) {
+    	CollectItem(player, board, newX, newY);
+	}
+
 
     board.setEntity(newX, newY, player);
     board.setEntity(pos[0], pos[1], nullptr); // Clear old position

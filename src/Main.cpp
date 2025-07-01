@@ -8,17 +8,22 @@ int main(int argc, char *argv[]) {
 
 	Board board;
 	Player* player = new Player(100,50,10,DEFAULT_POS);
-    Mob* Mob1 = new Mob("Teto",50,5,{12,15});
+    Mob* Mob1 = new Mob("Teto",50,5,DEFAULT_POS);
+    Mob* Mob2 = new Mob("Miku",50,5,DEFAULT_POS);
     Item* Sword_ = new Sword("Sword",5,DEFAULT_POS);
     Item* Bow_ = new Bow("Bow",2,5,DEFAULT_POS);
-    
+    Heal* Heal_ = new Heal("Heal",20,DEFAULT_POS);
+
 	board.setEntity(BOARD_SIZE/2, BOARD_SIZE/2, player);
+    board.setEntity(2, 16, Heal_);
     
     std::vector<int> randomPos = generateRandomPosition(BOARD_SIZE, board);
+    std::vector<int> randomPos2 = generateRandomPosition(BOARD_SIZE, board);
     std::vector<int> randomPosItem = generateRandomItemPosition(BOARD_SIZE, board);
     std::vector<int> randomPosBow = generateRandomItemPosition(BOARD_SIZE, board);
     
     board.setEntity(randomPos[0],randomPos[1] , Mob1);
+    board.setEntity(randomPos2[0], randomPos2[1], Mob2);
     board.setEntity(randomPosItem[0], randomPosItem[1], Sword_);
     board.setEntity(randomPosBow[0], randomPosBow[1], Bow_);
 
@@ -78,6 +83,18 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    SDL_Surface* HealSurface = IMG_Load("assets/images/Heal_potion.png");
+    if (!HealSurface) {
+        std::cerr << "Failed to load heal image: " << IMG_GetError() << std::endl;
+        SDL_FreeSurface(MobSurface);
+        SDL_FreeSurface(BowSurface);
+        SDL_FreeSurface(SwordSurface);
+        TTF_CloseFont(font);
+        TTF_Quit();
+        SDL_Quit();
+        return 1;
+    }
+
     SDL_Window *window = SDL_CreateWindow("Mini game RPG AlphaTest",
                                           SDL_WINDOWPOS_CENTERED,
                                           SDL_WINDOWPOS_CENTERED,
@@ -103,10 +120,12 @@ int main(int argc, char *argv[]) {
     SDL_Texture* swordTexture = SDL_CreateTextureFromSurface(renderer, SwordSurface);
     SDL_Texture* bowTexture = SDL_CreateTextureFromSurface(renderer, BowSurface);
     SDL_Texture* mobTexture = SDL_CreateTextureFromSurface(renderer, MobSurface);
+    SDL_Texture* healTexture = SDL_CreateTextureFromSurface(renderer, HealSurface);
     SDL_FreeSurface(PlayerSurface); // libère la surface après avoir créé la texture
     SDL_FreeSurface(SwordSurface);
     SDL_FreeSurface(BowSurface);
     SDL_FreeSurface(MobSurface);
+    SDL_FreeSurface(HealSurface);
 
 
     SDL_Event e;
@@ -128,7 +147,7 @@ int main(int argc, char *argv[]) {
 		if (is_key_pressed(SDL_SCANCODE_DOWN)) {
 			MoveDown(player, board);
 		}
-		board.DrawBoard(renderer, playerTexture,swordTexture,bowTexture,mobTexture);
+		board.DrawBoard(renderer, playerTexture,swordTexture,bowTexture,mobTexture,healTexture);
 		board.DrawInfo(renderer, player);
         board.renderPlayerInfo(renderer,font,player,board);
 		SDL_RenderPresent(renderer);

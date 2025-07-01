@@ -98,8 +98,8 @@ void CollectItem(Player* player, Board& board, int x, int y) {
 
 bool IsPlayerNearMob(Player* player, Board& board) {
 	auto playerPos = player->getPosition();
-	for (int x = playerPos[0] - 1; x <= playerPos[0] + 1; ++x) {
-		for (int y = playerPos[1] - 1; y <= playerPos[1] + 1; ++y) {
+	for (int x = playerPos[0] - 2; x <= playerPos[0] + 2; ++x) {
+		for (int y = playerPos[1] - 2; y <= playerPos[1] + 2; ++y) {
 			if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
 				Entity* entity = board.getEntity(x, y);
 				if (entity && entity->getType() == EntityType::MOB) {
@@ -113,8 +113,8 @@ bool IsPlayerNearMob(Player* player, Board& board) {
 
 Mob* getNearMob(Player* player, Board& board) {
 	auto playerPos = player->getPosition();
-	for (int x = playerPos[0] - 1; x <= playerPos[0] + 1; ++x) {
-		for (int y = playerPos[1] - 1; y <= playerPos[1] + 1; ++y) {
+	for (int x = playerPos[0] - 2; x <= playerPos[0] + 2; ++x) {
+		for (int y = playerPos[1] - 2; y <= playerPos[1] + 2; ++y) {
 			if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
 				Entity* entity = board.getEntity(x, y);
 				if (entity && entity->getType() == EntityType::MOB) {
@@ -124,4 +124,20 @@ Mob* getNearMob(Player* player, Board& board) {
 		}
 	}
 	return nullptr;
+}
+
+void HealPlayer(Player* player, double amount) {
+	if (amount < 0) {
+		return;
+	}
+	player->setHp(player->getHp() + amount);
+}
+
+void HealPlayerOnItem(Player* player, Board& board, int x, int y) {
+	Entity* entity = board.getEntity(x, y);
+	Heal* healItem = dynamic_cast<Heal*>(entity);
+	if (healItem) {
+		HealPlayer(player, healItem->getHealAmount());
+		board.DeleteEntity(x, y); // Remove the heal item from the board
+	}
 }

@@ -58,7 +58,7 @@ EntityType Board::getEntityType(int x, int y) const {
     return EntityType::VOID;
 }
 
-void Board::DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Texture* SwordTexture,SDL_Texture* BowTexture, SDL_Texture* MobTexture) const {
+void Board::DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Texture* SwordTexture,SDL_Texture* BowTexture, SDL_Texture* MobTexture,SDL_Texture* HealTexture) const {
     for (int i = 0; i < BOARD_SIZE; ++i) {
         for (int j = 0; j < BOARD_SIZE; ++j) {
             SDL_Rect cell = { j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE };
@@ -82,6 +82,14 @@ void Board::DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Text
                     }
                     SDL_RenderCopy(renderer, BowTexture, nullptr, &cell);
                     bow = nullptr;
+                }
+                else if (auto* heal = dynamic_cast<Heal*>(entity)) {
+                    if (!HealTexture) {
+                        SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
+                        SDL_RenderFillRect(renderer, &cell);
+                    }
+                    SDL_RenderCopy(renderer, HealTexture, nullptr, &cell);
+                    heal = nullptr;
                 }
                 else {
                     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // couleur par défaut pour les items
@@ -185,7 +193,7 @@ void Board::renderPlayerInfo(SDL_Renderer* renderer, TTF_Font* font, Player* pla
     } else {
         renderText(renderer, font, " - None", x + 100, y, white);
     }
-    y += 30; oss.str(""); oss.clear();
+    y += 50; oss.str(""); oss.clear();
 
     renderText(renderer, font, "Inventory:", x, y, white);
     y += 30;

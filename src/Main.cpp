@@ -132,9 +132,10 @@ int main(int argc, char *argv[]) {
     int quit = 0;
     while (!quit) {
         while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT)
+            if (e.type == SDL_QUIT){
                 quit = 1;
-			} 
+            }
+		}
 		if (is_key_pressed(SDL_SCANCODE_RIGHT)) {
 			MoveRight(player, board);
 		}

@@ -28,7 +28,6 @@ std::vector<int> generateRandomItemPosition(int boatdsize, Board& board) {
     int x = distr(eng);
     int y = distr(eng);
     if (board.getEntityType(x, y) != EntityType::VOID) {
-        // Use a loop instead of recursion to avoid ambiguity and stack overflow
         do {
             x = distr(eng);
             y = distr(eng);

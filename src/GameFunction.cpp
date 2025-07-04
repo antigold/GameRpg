@@ -20,7 +20,7 @@ void HealPlayerOnItem(Player* player, Board& board, int x, int y) {
 
 void MoveRight(Entity* entity, Board& board) {
     Player* player = dynamic_cast<Player*>(entity);
-    if (!player) return; // Sécurité : ne rien faire si pas un joueur
+    if (!player) return;
 
     auto pos = player->getPosition();
     int newX = pos[0];

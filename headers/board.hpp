@@ -4,22 +4,21 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
-#include "Entity.hpp"
-#include "GameFunction.hpp"
+#include "game_function.hpp"
 
-const int BOARD_SIZE = 19;
-const int TILE_SIZE = 32;
+const int kBoardSize = 19;
+const int kTilesize = 32;
 
 class Board {
 private:
-    Entity* board[BOARD_SIZE][BOARD_SIZE];
+    Entity* board[kBoardSize][kBoardSize];
 public:
     Board();
     ~Board();
-    void setEntity(int x, int y, Entity* entity);
-    void DeleteEntity(int x, int y);
-    Entity* getEntity(int x, int y) const;
-    EntityType getEntityType(int x, int y) const;
+    void setEntity(Position pos, Entity* entity);
+    void DeleteEntity(Position pos);
+    Entity* getEntity(Position pos) const;
+    EntityType getEntityType(Position pos) const;
     void DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Texture* SwordTexture,SDL_Texture* BowTexture, SDL_Texture* MobTexture,SDL_Texture* HealTexture) const;
     void DrawInfo(SDL_Renderer* renderer, Player* player) const;
     void renderPlayerInfo(SDL_Renderer* renderer, TTF_Font* font, Player* player,Board& board);

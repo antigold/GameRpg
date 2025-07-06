@@ -11,14 +11,27 @@ enum class EntityType {
     VOID
 };
 
+class Position {
+private:
+    int x_;
+    int y_;
+public:
+    Position(int x,int y);
+    ~Position();
+    int getX() const;
+    int getY() const;
+    void setX(int newX);
+    void setY(int newY);
+};
+
 class Entity {
 private:
     EntityType type;
     double hp;
     double attack;
-    std::array<int,2> Position;
+    Position Pos;
 public:
-    Entity(EntityType t, double hp, double attack, std::array<int,2> pos);
+    Entity(EntityType t, double hp, double attack, Position pos);
     virtual ~Entity();
 
     double getHp();
@@ -29,7 +42,7 @@ public:
     virtual std::string getClassName() const;
 
     void setPosition(int x, int y);
-    std::array<int, 2> getPosition();
+    Position getPosition();
 
     EntityType getType() const;
 };
@@ -38,7 +51,7 @@ class Item : public Entity {
 private:
     std::string name;
 public:
-    Item(const std::string& itemName,std::array<int,2> pos);
+    Item(const std::string& itemName,Position pos);
     virtual ~Item() override;
 
     std::string getName() const;
@@ -54,7 +67,7 @@ private:
     int level;
 public:
     Player();
-    Player(double hp, double attack, double defense, std::array<int,2> pos);
+    Player(double hp, double attack, double defense, Position pos);
 
     double getDefense() const;
     int getXp() const;
@@ -76,7 +89,7 @@ class Mob : public Entity {
 private:
     std::string mobname;
 public:
-    Mob(const std::string& name, double hp, double attack, std::array<int,2> pos);
+    Mob(const std::string& name, double hp, double attack, Position pos);
     std::string getMobName() const;
     void setMobName(const std::string& newName);
     virtual std::string getClassName() const override;
@@ -84,14 +97,14 @@ public:
 
 class Void : public Entity {
 public:
-    explicit Void(const std::array<int, 2>& pos = {0, 0});
+    explicit Void(const Position pos = Position(0,0));
 };
 
 class Heal : public Item {
 private:
     double healAmount;
 public:
-    Heal(const std::string& itemName, double healamount,std::array<int,2> pos);
+    Heal(const std::string& itemName, double healamount,Position pos);
     double getHealAmount() const;
     void setHealAmount(double newAmount);
     virtual std::string getClassName() const override;
@@ -101,14 +114,14 @@ class Weapon : public Item {
 private:
     double attackPoints;
 public:
-    Weapon(const std::string& itemName, double attack,std::array<int,2> pos);
+    Weapon(const std::string& itemName, double attack,Position pos);
     double getAttackPoints() const;
     void setAttackPoints(double newAttack);
 };
 
 class Sword : public Weapon {
 public:
-    Sword(const std::string& itemName, double attack, std::array<int,2> pos);
+    Sword(const std::string& itemName, double attack, Position pos);
     virtual std::string getClassName() const override;
 };
 
@@ -116,7 +129,7 @@ class Bow : public Weapon {
 private:
     double range;
 public:
-    Bow(const std::string& itemName, double attack, double range, std::array<int,2> pos);
+    Bow(const std::string& itemName, double attack, double range, Position pos);
     double getRange() const;
     void setRange(double newRange);
     virtual std::string getClassName() const override;

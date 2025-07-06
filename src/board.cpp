@@ -1,16 +1,17 @@
-#include "GameBoard.hpp"
-#include "Entity.hpp"
+#include "board.hpp"
 #include <iostream> 
 
+//|==========================|Class Board|===============================================|
+
 Board::Board() {
-    for (int i = 0; i < BOARD_SIZE; ++i)
-        for (int j = 0; j < BOARD_SIZE; ++j)
+    for (int i = 0; i < kBoardSize; ++i)
+        for (int j = 0; j < kBoardSize; ++j)
             board[i][j] = nullptr;
 }
 
 Board::~Board() {
-    for (int i = 0; i < BOARD_SIZE; ++i) {
-        for (int j = 0; j < BOARD_SIZE; ++j) {
+    for (int i = 0; i < kBoardSize; ++i) {
+        for (int j = 0; j < kBoardSize; ++j) {
             if (board[i][j] != nullptr && board[i][j]->getType() != EntityType::PLAYER) {
                 delete board[i][j];
             }
@@ -19,53 +20,54 @@ Board::~Board() {
     }
 }
 
-
-void Board::setEntity(int x, int y, Entity* entity) {
-    if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
-        board[x][y] = entity;
+void Board::setEntity(Position pos, Entity* entity) {
+    if (pos.getX() >= 0 && pos.getX() < kBoardSize && pos.getY() >= 0 && pos.getY() < kBoardSize) {
+        board[pos.getX()][pos.getY()] = entity;
         if (entity != nullptr) {
-            entity->setPosition(x, y);
+            entity->setPosition(pos.getX(), pos.getY());
         }
     } else {
-        std::cerr << "Position invalide (" << x << ", " << y << ")" << std::endl;
+        std::cerr << "Position invalide (" << pos.getX() << ", " << pos.getY() << ")" << std::endl;
     }
 }
 
-Entity* Board::getEntity(int x, int y) const {
-    if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
-        return board[x][y];
+Entity* Board::getEntity(Position pos) const {
+    if (pos.getX() >= 0 && pos.getX() < kBoardSize && pos.getY() >= 0 && pos.getY() < kBoardSize) {
+        return board[pos.getX()][pos.getY()];
     }
     return nullptr; // retourne nullptr si la position est invalide
 }
 
-void Board::DeleteEntity(int x, int y) {
-    if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
-        if (board[x][y] != nullptr && board[x][y]->getType() != EntityType::PLAYER) {
-            delete board[x][y]; // supprimer uniquement si ce n’est pas un joueur
+void Board::DeleteEntity(Position pos) {
+    if (pos.getX() >= 0 && pos.getX() < kBoardSize && pos.getY() >= 0 && pos.getY() < kBoardSize) {
+        if (board[pos.getX()][pos.getY()] != nullptr && board[pos.getX()][pos.getY()]->getType() != EntityType::PLAYER) {
+            delete board[pos.getX()][pos.getY()]; // supprimer uniquement si ce n’est pas un joueur
         }
-        board[x][y] = nullptr;
+        board[pos.getX()][pos.getY()] = nullptr;
     }
 }
 
 
-EntityType Board::getEntityType(int x, int y) const {
-    if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
-        if (board[x][y] == nullptr) {
+EntityType Board::getEntityType(Position pos) const {
+    if (pos.getX() >= 0 && pos.getX() < kBoardSize && pos.getY() >= 0 && pos.getY() < kBoardSize) {
+        if (board[pos.getX()][pos.getY()] == nullptr) {
             return EntityType::VOID;
         }
-        return board[x][y]->getType();
+        return board[pos.getX()][pos.getY()]->getType();
     }
     return EntityType::VOID;
 }
 
 void Board::DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Texture* SwordTexture,SDL_Texture* BowTexture, SDL_Texture* MobTexture,SDL_Texture* HealTexture) const {
-    for (int i = 0; i < BOARD_SIZE; ++i) {
-        for (int j = 0; j < BOARD_SIZE; ++j) {
-            SDL_Rect cell = { j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE };
+    for (int i = 0; i < kBoardSize; ++i) {
+        for (int j = 0; j < kBoardSize; ++j) {
+            SDL_Rect cell = { j * kTilesize, i * kTilesize, kTilesize, kTilesize };
 
-            Entity* entity = getEntity(i, j);
+            auto pos = Position(i,j); 
 
-            if (entity && getEntityType(i, j) == EntityType::ITEM) {
+            Entity* entity = getEntity(pos);
+
+            if (entity && getEntityType(pos) == EntityType::ITEM) {
                 if (auto* sword = dynamic_cast<Sword*>(entity)) {
                     if (!SwordTexture) {
                         SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
@@ -97,7 +99,7 @@ void Board::DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Text
                 continue;
             }
 
-            switch (getEntityType(i, j)) {
+            switch (getEntityType(pos)) {
             case EntityType::VOID:
                 SDL_SetRenderDrawColor(renderer, 255, 255, 233, 0); // couleur pour les cases vides
                 break;
@@ -133,9 +135,11 @@ void Board::DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Text
 void Board::DrawInfo(SDL_Renderer* renderer, Player* player) const {
     if (!player) return;
 
+    const int boardPixelsize = kBoardSize * kTilesize;
+
     SDL_Rect infoBox = {
-        BOARD_SIZE * TILE_SIZE, 0,
-        900 - BOARD_SIZE * TILE_SIZE, 608
+        boardPixelsize, 0,
+        900 - boardPixelsize, 608
     };
 
     SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
@@ -159,13 +163,13 @@ void Board::renderPlayerInfo(SDL_Renderer* renderer, TTF_Font* font, Player* pla
 
     SDL_Color white = {255, 255, 255, 255};
     SDL_Color red = {255, 0, 0, 255};
-    int x = BOARD_SIZE * TILE_SIZE + 10;
+    int x = kBoardSize * kTilesize + 10;
     int y = 10;
 
     auto pos = player->getPosition();
     std::ostringstream oss;
 
-    oss << "Position: (" << pos[0] << ", " << pos[1] << ")";
+    oss << "Position: (" << pos.getX() << ", " << pos.getY() << ")";
     renderText(renderer, font, oss.str(), x, y, white);
     y += 30; oss.str(""); oss.clear();
 

@@ -1,31 +1,30 @@
 #define SDL_MAIN_HANDLED
 #include <iostream>
-#include "Main.hpp"
+#include "main.hpp"
 #include "input.cpp"
 
 int main(int argc, char *argv[]) {
 
-
 	Board board;
-	Player* player = new Player(100,50,10,DEFAULT_POS);
-    Mob* Mob1 = new Mob("Teto",50,5,DEFAULT_POS);
-    Mob* Mob2 = new Mob("Miku",50,5,DEFAULT_POS);
-    Item* Sword_ = new Sword("Sword",5,DEFAULT_POS);
-    Item* Bow_ = new Bow("Bow",2,5,DEFAULT_POS);
-    Heal* Heal_ = new Heal("Heal",20,DEFAULT_POS);
+	Player* player = new Player(100,50,10,kDefault_pos);
+    Mob* Mob1 = new Mob("Teto",50,5,kDefault_pos);
+    Mob* Mob2 = new Mob("Miku",50,5,kDefault_pos);
+    Item* Sword_ = new Sword("Sword",5,kDefault_pos);
+    Item* Bow_ = new Bow("Bow",2,5,kDefault_pos);
+    Heal* Heal_ = new Heal("Heal",20,kDefault_pos);
 
-	board.setEntity(BOARD_SIZE/2, BOARD_SIZE/2, player);
-    board.setEntity(2, 16, Heal_);
+	board.setEntity(Position(kBoardSize/2,kBoardSize/2), player);
+    board.setEntity(Position(2,16), Heal_);
     
-    std::vector<int> randomPos = generateRandomPosition(BOARD_SIZE, board);
-    std::vector<int> randomPos2 = generateRandomPosition(BOARD_SIZE, board);
-    std::vector<int> randomPosItem = generateRandomItemPosition(BOARD_SIZE, board);
-    std::vector<int> randomPosBow = generateRandomItemPosition(BOARD_SIZE, board);
+    std::vector<int> randomPos = generateRandomPosition(kBoardSize, board);
+    std::vector<int> randomPos2 = generateRandomPosition(kBoardSize, board);
+    std::vector<int> randomPosItem = generateRandomItemPosition(kBoardSize, board);
+    std::vector<int> randomPosBow = generateRandomItemPosition(kBoardSize, board);
     
-    board.setEntity(randomPos[0],randomPos[1] , Mob1);
-    board.setEntity(randomPos2[0], randomPos2[1], Mob2);
-    board.setEntity(randomPosItem[0], randomPosItem[1], Sword_);
-    board.setEntity(randomPosBow[0], randomPosBow[1], Bow_);
+    board.setEntity(Position(randomPos[0],randomPos[1]), Mob1);
+    board.setEntity(Position(randomPos2[0], randomPos2[1]), Mob2);
+    board.setEntity(Position(randomPosItem[0], randomPosItem[1]), Sword_);
+    board.setEntity(Position(randomPosBow[0], randomPosBow[1]), Bow_);
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         return 1;
@@ -160,7 +159,6 @@ int main(int argc, char *argv[]) {
     TTF_CloseFont(font);
     TTF_Quit();
     SDL_Quit();
-
 
     return 0;
 }

@@ -1,7 +1,6 @@
 #include <random>
 #include <vector>
-#include "Entity.hpp"
-#include "GameBoard.hpp"
+#include "board.hpp"
 
 
 std::vector<int> generateRandomPosition(int boardSize, Board& board);

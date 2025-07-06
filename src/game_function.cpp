@@ -27,17 +27,19 @@ void MoveRight(Entity* entity, Board& board) {
     int newY = pos.getY() + 1;
     if (newY >= kBoardSize) newY = 0;
 
-	Entity* target = board.getEntity(Position(newX,newY));
+	Position targetpos = Position(newX,newY); // New position
+
+	Entity* target = board.getEntity(targetpos);
 	if (auto* heal = dynamic_cast<Heal*>(target)) {
     	HealPlayerOnItem(player, board,Position(newX,newY));
     	delete heal;
-	} else if (board.getEntityType(Position(newX,newY)) == EntityType::ITEM) {
-    	CollectItem(player, board,Position(newX,newY));
+	} else if (board.getEntityType(targetpos) == EntityType::ITEM) {
+    	CollectItem(player, board,targetpos);
 	}
 
-    board.setEntity(Position(newX,newY), player);
+    board.setEntity(targetpos, player);
     board.setEntity(Position(pos.getX(),pos.getY()), nullptr);
-    player->setPosition(newX, newY);
+    player->setPosition(targetpos);
 }
 
 
@@ -52,17 +54,19 @@ void MoveLeft(Entity* entity, Board& board) {
         newY = kBoardSize - 1;
 	}
 
-	Entity* target = board.getEntity(Position(newX,newY));
+	Position targetpos = Position(newX,newY);
+
+	Entity* target = board.getEntity(targetpos);
 	if (auto* heal = dynamic_cast<Heal*>(target)) {
-    	HealPlayerOnItem(player, board,Position(newX,newY));
+    	HealPlayerOnItem(player, board,targetpos);
     	delete heal;
-	} else if (board.getEntityType(Position(newX,newY)) == EntityType::ITEM) {
-    	CollectItem(player, board,Position(newX,newY));
+	} else if (board.getEntityType(targetpos) == EntityType::ITEM) {
+    	CollectItem(player, board,targetpos);
 	}
 
-    board.setEntity(Position(newX,newY), player);
+    board.setEntity(targetpos, player);
 	board.setEntity(Position(pos.getX(),pos.getY()), nullptr); // Clear old position
-	player->setPosition(newX, newY);
+	player->setPosition(targetpos);
 }
 
 
@@ -77,17 +81,19 @@ void MoveUp(Entity* entity, Board& board) {
 		newX = kBoardSize - 1;
 	}
 
-	Entity* target = board.getEntity(Position(newX,newY));
+	Position targetpos = Position(newX,newY);
+
+	Entity* target = board.getEntity(targetpos);
 	if (auto* heal = dynamic_cast<Heal*>(target)) {
     	HealPlayerOnItem(player, board,Position(newX,newY));
     	delete heal;
-	} else if (board.getEntityType(Position(newX,newY)) == EntityType::ITEM) {
-    	CollectItem(player, board,Position(newX,newY));
+	} else if (board.getEntityType(targetpos) == EntityType::ITEM) {
+    	CollectItem(player, board,targetpos);
 	}
 	
-	board.setEntity(Position(newX,newY), player);
+	board.setEntity(targetpos, player);
 	board.setEntity(Position(pos.getX(),pos.getY()), nullptr); // Clear old position
-	player->setPosition(newX, newY);
+	player->setPosition(targetpos);
 }
 
 void MoveDown(Entity* entity, Board& board) {
@@ -102,26 +108,29 @@ void MoveDown(Entity* entity, Board& board) {
         newX = 0;
     }
 
-    Entity* target = board.getEntity(Position(newX,newY));
+	Position targetpos = Position(newX,newY);
+
+    Entity* target = board.getEntity(targetpos);
 	if (auto* heal = dynamic_cast<Heal*>(target)) {
-    	HealPlayerOnItem(player, board,Position(newX,newY));
+    	HealPlayerOnItem(player, board,targetpos);
     	delete heal;
-	} else if (board.getEntityType(Position(newX,newY)) == EntityType::ITEM) {
-    	CollectItem(player, board, Position(newX,newY));
+	} else if (board.getEntityType(targetpos) == EntityType::ITEM) {
+    	CollectItem(player, board, targetpos);
 	}
 
 
-    board.setEntity(Position(newX,newY), player);
+    board.setEntity(targetpos, player);
     board.setEntity(Position(pos.getX(),pos.getY()), nullptr); // Clear old position
-    player->setPosition(newX, newY);
+    player->setPosition(targetpos);
 }
 
 
 void CollectItem(Player* player, Board& board,Position pos) {
-    Entity* entity = board.getEntity(Position(pos.getX(),pos.getY()));
+	Position entity_pos = Position(pos.getX(),pos.getY());
+    Entity* entity = board.getEntity(entity_pos);
     Item* item = dynamic_cast<Item*>(entity);
     if (item) {
-        board.setEntity(Position(pos.getX(),pos.getY()), nullptr); // Remove from board
+        board.setEntity(entity_pos, nullptr); // Remove from board
         player->addItem(std::unique_ptr<Item>(item));
     }
 }

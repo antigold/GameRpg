@@ -26,14 +26,12 @@ bool Entity::isAlive() const {
     return hp > 0;
 }
 
-void Entity::setPosition(int x, int y) {
-    if (x < 0 || y < 0) {
+void Entity::setPosition(Position pos) {
+    if (pos.getX() < 0 || pos.getY() < 0) {
         std::cout << "Position cannot be negative. Setting to (0, 0)." << std::endl;
-        Pos.setX(0);
-        Pos.setY(0);
+        Pos = Position(0,0);
     } else {
-        Pos.setX(x);
-        Pos.setY(y);
+        Pos = Position(pos.getX(),pos.getY());
     }
 }
 

@@ -12,7 +12,7 @@ Board::Board() {
 Board::~Board() {
     for (int i = 0; i < kBoardSize; ++i) {
         for (int j = 0; j < kBoardSize; ++j) {
-            if (board[i][j] != nullptr && board[i][j]->getType() != EntityType::PLAYER) {
+            if (board[i][j] == nullptr || board[i][j]->getType() == EntityType::PLAYER) {
                 delete board[i][j];
             }
             board[i][j] = nullptr;
@@ -21,39 +21,55 @@ Board::~Board() {
 }
 
 void Board::setEntity(Position pos, Entity* entity) {
-    if (pos.getX() >= 0 && pos.getX() < kBoardSize && pos.getY() >= 0 && pos.getY() < kBoardSize) {
-        board[pos.getX()][pos.getY()] = entity;
+
+    int x = pos.getX();
+    int y = pos.getY();
+
+    if (x >= 0 && x < kBoardSize && y >= 0 && y < kBoardSize) {
+        board[x][y] = entity;
         if (entity != nullptr) {
-            entity->setPosition(pos.getX(), pos.getY());
+            entity->setPosition(Position(x,y));
         }
     } else {
-        std::cerr << "Position invalide (" << pos.getX() << ", " << pos.getY() << ")" << std::endl;
+        std::cerr << "Position invalide (" << x << ", " << y << ")" << std::endl;
     }
 }
 
 Entity* Board::getEntity(Position pos) const {
-    if (pos.getX() >= 0 && pos.getX() < kBoardSize && pos.getY() >= 0 && pos.getY() < kBoardSize) {
-        return board[pos.getX()][pos.getY()];
+
+    int x = pos.getX();
+    int y = pos.getY();
+
+    if (x >= 0 && x < kBoardSize && y >= 0 && y < kBoardSize) {
+        return board[x][y];
     }
     return nullptr; // retourne nullptr si la position est invalide
 }
 
 void Board::DeleteEntity(Position pos) {
-    if (pos.getX() >= 0 && pos.getX() < kBoardSize && pos.getY() >= 0 && pos.getY() < kBoardSize) {
-        if (board[pos.getX()][pos.getY()] != nullptr && board[pos.getX()][pos.getY()]->getType() != EntityType::PLAYER) {
-            delete board[pos.getX()][pos.getY()]; // supprimer uniquement si ce n’est pas un joueur
+
+    int x = pos.getX();
+    int y = pos.getY();
+
+    if (x >= 0 && x < kBoardSize && y >= 0 && y < kBoardSize) {
+        if (board[x][y] != nullptr && board[x][y]->getType() != EntityType::PLAYER) {
+            delete board[x][y]; // supprimer uniquement si ce n’est pas un joueur
         }
-        board[pos.getX()][pos.getY()] = nullptr;
+        board[x][y] = nullptr;
     }
 }
 
 
 EntityType Board::getEntityType(Position pos) const {
-    if (pos.getX() >= 0 && pos.getX() < kBoardSize && pos.getY() >= 0 && pos.getY() < kBoardSize) {
-        if (board[pos.getX()][pos.getY()] == nullptr) {
+
+    int x = pos.getX();
+    int y = pos.getY();
+
+    if (x >= 0 && x < kBoardSize && y >= 0 && y < kBoardSize) {
+        if (board[x][y] == nullptr) {
             return EntityType::VOID;
         }
-        return board[pos.getX()][pos.getY()]->getType();
+        return board[x][y]->getType();
     }
     return EntityType::VOID;
 }

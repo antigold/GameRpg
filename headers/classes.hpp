@@ -41,7 +41,7 @@ public:
     bool isAlive() const;
     virtual std::string getClassName() const;
 
-    void setPosition(int x, int y);
+    void setPosition(Position pos);
     Position getPosition();
 
     EntityType getType() const;

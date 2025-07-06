@@ -1,9 +1,8 @@
 #include <iostream>
 #include <random>
-#include <vector>
 #include "entity_spawn.hpp"
 
-std::vector<int> generateRandomPosition(int boardSize, Board& board) { //this is more optimized than the previous version
+Position generateRandomPosition(int boardSize, Board& board) { //this is more optimized than the previous version
     std::random_device rd; 
     std::mt19937 eng(rd());
     std::uniform_int_distribution<> distr(0, boardSize - 1);
@@ -18,10 +17,10 @@ std::vector<int> generateRandomPosition(int boardSize, Board& board) { //this is
             y = distr(eng);
         } while (board.getEntityType(Position(x,y)) == EntityType::PLAYER);
     }
-    return {x, y};
+    return Position(x,y);
 }
 
-std::vector<int> generateRandomItemPosition(int boatdsize, Board& board) {
+Position generateRandomItemPosition(int boatdsize, Board& board) {
     std::random_device rd; 
     std::mt19937 eng(rd());
     std::uniform_int_distribution<> distr(0, boatdsize - 1);
@@ -34,5 +33,5 @@ std::vector<int> generateRandomItemPosition(int boatdsize, Board& board) {
         } while (board.getEntityType(Position(x,y)) != EntityType::VOID);
     }
     
-    return {x, y};
+    return Position(x,y);
 }

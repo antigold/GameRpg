@@ -16,15 +16,15 @@ int main(int argc, char *argv[]) {
 	board.setEntity(Position(kBoardSize/2,kBoardSize/2), player);
     board.setEntity(Position(2,16), Heal_);
     
-    std::vector<int> randomPos = generateRandomPosition(kBoardSize, board);
-    std::vector<int> randomPos2 = generateRandomPosition(kBoardSize, board);
-    std::vector<int> randomPosItem = generateRandomItemPosition(kBoardSize, board);
-    std::vector<int> randomPosBow = generateRandomItemPosition(kBoardSize, board);
+    Position randomPos = generateRandomPosition(kBoardSize, board);
+    Position randomPos2 = generateRandomPosition(kBoardSize, board);
+    Position randomPosItem = generateRandomItemPosition(kBoardSize, board);
+    Position randomPosBow = generateRandomItemPosition(kBoardSize, board);
     
-    board.setEntity(Position(randomPos[0],randomPos[1]), Mob1);
-    board.setEntity(Position(randomPos2[0], randomPos2[1]), Mob2);
-    board.setEntity(Position(randomPosItem[0], randomPosItem[1]), Sword_);
-    board.setEntity(Position(randomPosBow[0], randomPosBow[1]), Bow_);
+    board.setEntity(Position(randomPos.getX(),randomPos.getY()), Mob1);
+    board.setEntity(Position(randomPos2.getX(), randomPos2.getY()), Mob2);
+    board.setEntity(Position(randomPosItem.getX(), randomPosItem.getY()), Sword_);
+    board.setEntity(Position(randomPosBow.getX(), randomPosBow.getY()), Bow_);
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         return 1;

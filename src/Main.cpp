@@ -6,9 +6,9 @@
 int main(int argc, char *argv[]) {
 
 	Board board;
-	Player* player = new Player(100,50,10,kDefault_pos);
-    Mob* Mob1 = new Mob("Teto",50,5,kDefault_pos);
-    Mob* Mob2 = new Mob("Miku",50,5,kDefault_pos);
+	Player* player = new Player(kDefault_pos);
+    Mob* Mob1 = new Mob("Teto",Stats(50,5),kDefault_pos);
+    Mob* Mob2 = new Mob("Miku",Stats(50,5),kDefault_pos);
     Item* Sword_ = new Sword("Sword",5,kDefault_pos);
     Item* Bow_ = new Bow("Bow",2,5,kDefault_pos);
     Heal* Heal_ = new Heal("Heal",20,kDefault_pos);
@@ -159,6 +159,13 @@ int main(int argc, char *argv[]) {
     TTF_CloseFont(font);
     TTF_Quit();
     SDL_Quit();
+
+    delete player;
+    delete Mob1;
+    delete Mob2;
+    delete Sword_;
+    delete Bow_;
+    delete Heal_;
 
     return 0;
 }

@@ -12,7 +12,7 @@ Board::Board() {
 Board::~Board() {
     for (int i = 0; i < kBoardSize; ++i) {
         for (int j = 0; j < kBoardSize; ++j) {
-            if (board[i][j] == nullptr || board[i][j]->getType() == EntityType::PLAYER) {
+            if (board[i][j] != nullptr && board[i][j]->getType() != EntityType::PLAYER) {
                 delete board[i][j];
             }
             board[i][j] = nullptr;
@@ -116,9 +116,6 @@ void Board::DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Text
             }
 
             switch (getEntityType(pos)) {
-            case EntityType::VOID:
-                SDL_SetRenderDrawColor(renderer, 255, 255, 233, 0); // couleur pour les cases vides
-                break;
             case EntityType::PLAYER:
                 if (PlayerTexture) {
                     SDL_RenderCopy(renderer, PlayerTexture, nullptr, &cell);
@@ -137,7 +134,7 @@ void Board::DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Text
                 }
                 continue;
             default:
-                SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
+                SDL_SetRenderDrawColor(renderer, 255, 255, 233, 0); // couleur pour les cases vides
                 break;
             }
 
@@ -189,26 +186,26 @@ void Board::renderPlayerInfo(SDL_Renderer* renderer, TTF_Font* font, Player* pla
     renderText(renderer, font, oss.str(), x, y, white);
     y += 30; oss.str(""); oss.clear();
 
-    oss << "HP: " << player->getHp();
+    oss << "HP: " << player->getStats().getHp();
     renderText(renderer, font, oss.str(), x, y, white);
     y += 30; oss.str(""); oss.clear();
 
-    oss << "Attack: " << player->getAttack();
+    oss << "Attack: " << player->getStats().getAttack();
     renderText(renderer, font, oss.str(), x, y, white);
     y += 30; oss.str(""); oss.clear();
 
-    oss << "Defense: " << player->getDefense();
+    oss << "Defense: " << player->getStats().getDefense();
     renderText(renderer, font, oss.str(), x, y, white);
     y += 30; oss.str(""); oss.clear();
 
-    oss << "XP: " << player->getXp() << " | Level: " << player->getLevel();
+    oss << "XP: " << player->getStats().getXp() << " | Level: " << player->getStats().getLevel();
     renderText(renderer, font, oss.str(), x, y, white);
     y += 30; oss.str(""); oss.clear();
     
     renderText(renderer, font, "near Mob:", x , y, white);
     if (IsPlayerNearMob(player,board)) {
         auto mob = getNearMob(player,board);
-        oss << " - " << mob->getMobName() << " (HP: " << mob->getHp() << ")";
+        oss << " - " << mob->getMobName() << " (HP: " << mob->getStats().getHp() << ")";
         renderText(renderer, font, oss.str(), x + 100, y, red);
     } else {
         renderText(renderer, font, " - None", x + 100, y, white);
@@ -219,13 +216,16 @@ void Board::renderPlayerInfo(SDL_Renderer* renderer, TTF_Font* font, Player* pla
     y += 30;
 
     auto& inventory = player->getInventory();
-    if (inventory.empty()) {
+    const auto& items = inventory.getItems();
+
+    if (items.empty()) {
         renderText(renderer, font, " - (Empty)", x + 10, y, white);
     } else {
-        for (const auto& item : inventory) {
+        for (const auto& item : items) {
             renderText(renderer, font, " - " + item->getName(), x + 10, y, white);
             y += 25;
         }
     }
+
 }
 

@@ -18,10 +18,6 @@ Entity::Entity(EntityType t, double hp, double attack, Position pos) :
 
 Entity::~Entity() = default;
 
-double Entity::getHp() { return hp; }
-double Entity::getAttack() { return attack; }
-void Entity::setHp(double newHp) { hp = newHp; }
-void Entity::setAttack(double newAttack) { attack = newAttack; }
 bool Entity::isAlive() const {
     return hp > 0;
 }
@@ -52,87 +48,131 @@ Item::~Item() = default;
 std::string Item::getName() const { return name; }
 void Item::setName(const std::string& newName) { name = newName; }
 
-//|================================|Class Player|======================================|
+//================================|Class Inventory|===================================|
 
-Player::Player() : Entity(EntityType::PLAYER, 100, 10, {0,0}), defense(5), xp(0), level(1) {}
-Player::Player(double hp, double attack, double defense, Position pos)
-    : Entity(EntityType::PLAYER, hp, attack, pos), defense(defense), xp(0), level(1) {}
+Inventory::Inventory(){};
 
-double Player::getDefense() const { return defense; }
-int Player::getXp() const { return xp;}
-void Player::setXp(int newXp) {
-    if (newXp < 0) {
-        std::cerr << "XP cannot be negative. Setting to 0." << std::endl;
-        newXp = 0;
+bool Inventory::addItem(std::unique_ptr<Item> item){
+    if (items.size() >= MAX_INV_SIZE){
+        return false;
     }
+    items.push_back(std::move(item));
+    return true;
+}
+
+void Inventory::removeItem(const std::string& itemName){
+    for (auto i = items.begin(); i != items.end(); ++i){
+        if ((*i)->getName() == itemName){
+            items.erase(i);
+            return;
+        }
+    }
+}
+
+void Inventory::removeFirstItem(){
+    if (!items.empty()){
+        auto i = items.begin();
+        items.erase(i);
+    }
+}
+
+const std::vector<std::unique_ptr<Item>>& Inventory::getItems() const {
+    return items;
+} 
+
+size_t Inventory::getSize() const {
+    return items.size();
+}
+
+size_t Inventory::getMaxSize() const {
+    return MAX_INV_SIZE;
+}
+
+bool Inventory::isEmpty() {
+    return items.empty();
+}
+
+//|================================|Class Stats|=======================================|
+
+Stats::Stats(double hp,double attack,double defense,int xp,int level) : hp(hp), attack(attack), defense(defense),
+xp(xp), level(level) {}
+
+double Stats::getHp() const {
+    return hp;
+}
+
+void Stats::setHp(double amount){
+    hp = amount;
+}
+
+double Stats::getAttack() const {
+    return attack;
+}
+
+void Stats::setAttack(double newAtt){
+    attack = newAtt;
+}
+
+double Stats::getDefense() const {
+    return defense;
+}
+
+void Stats::setDefense(double newDef){
+    defense = newDef;
+}
+
+int Stats::getXp() const {
+    return xp;
+}
+
+void Stats::setXp(int newXp){
     xp = newXp;
 }
 
-void Player::setDefense(double newDefense) {
-    if (newDefense < 0) {
-        std::cerr << "Defense cannot be negative. Setting to 0." << std::endl;
-        newDefense = 0;
-    }
-    defense = newDefense;
+int Stats::getLevel() const {
+    return level;
 }
 
-const std::vector<std::unique_ptr<Item>>& Player::getInventory() const {
+void Stats::setLevel(int newLvl) {
+    level = newLvl;
+}
+
+
+//|================================|Class Player|======================================|
+
+Player::Player(Position pos)
+    : Entity(EntityType::PLAYER,100.0,5,pos),
+    stats(100.0,5.0,3.0),
+    inventory() {}
+
+Inventory& Player::getInventory() {
     return inventory;
 }
 
-void Player::listInventory() {
-    std::cout << "Inventory: " << std::endl;
-    for (const auto& item : inventory) {
-        std::cout << "- " << item->getName() << std::endl;
-    }
+Stats& Player::getStats() {
+    return stats;
 }
 
-void Player::addItem(std::unique_ptr<Item> item) {
-    if (inventory.size() < INVENTORY_SIZE) {
-        inventory.push_back(std::move(item));
-    } else {
-        std::cerr << "Inventory is full. Cannot add more items." << std::endl;
-    }
-}
-
-void Player::removeItem(const std::string& itemName) {
-    std::cout << "test" << std::endl;
-}
-
-int Player::getLevel() const { return level; }
-void Player::setLevel(int newLevel) {
-    if (newLevel < 0) {
-        std::cerr << "Level cannot be negative. Setting to 0." << std::endl;
-        newLevel = 0;
-    }
-    level = newLevel;
-}
-
-void Player::displayXp() {
-    char xpBar[10] = {' ',' ',' ',' ',' ',' ',' ',' ',' ',' '};
-    int length = sizeof(xpBar) / sizeof(xpBar[0]);
-    for (int i = 0; i < xp; i++) {
-        if (i >= length) break;
-        xpBar[i] = '*';
-    }
-    std::cout << "XP: " << xp << " | Level: " << level << std::endl;
-    std::cout << "XP Bar: ";
-    for (int i = 0; i < length; i++) {
-        std::cout << xpBar[i];
-    }
-    std::cout << std::endl;
+const Stats& Player::getStats() const {
+    return stats;
 }
 
 //|================================|Class Mob|======================================|
 
-Mob::Mob(const std::string& name, double hp, double attack, Position pos) : Entity(EntityType::MOB, hp, attack, pos), mobname(name) {}
+Mob::Mob(const std::string& name,Stats Stats,Position pos) : Entity(EntityType::MOB,25.0,3.0,pos), mobname(name),
+    stats(25.0,3.0,0),
+    inventory() {}
 std::string Mob::getClassName() const { return "Mob"; }
 std::string Mob::getMobName() const { return mobname; }
 void Mob::setMobName(const std::string& newName) { mobname = newName; }
 
-//|================================|Class Void|======================================|
+Stats& Mob::getStats() {
+    return stats;
+}
 
-Void::Void(Position pos) : Entity(EntityType::VOID, 0, 0, pos) {}
+const Stats& Mob::getStats() const {
+    return stats;
+}
 
 //|================================|Class Heal|======================================|
 

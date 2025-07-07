@@ -24,80 +24,97 @@ public:
     void setY(int newY);
 };
 
+
 class Entity {
-private:
+    private:
     EntityType type;
     double hp;
     double attack;
     Position Pos;
-public:
+    public:
     Entity(EntityType t, double hp, double attack, Position pos);
     virtual ~Entity();
-
-    double getHp();
-    double getAttack();
-    void setHp(double newHp);
-    void setAttack(double newAttack);
+    
     bool isAlive() const;
     virtual std::string getClassName() const;
-
+    
     void setPosition(Position pos);
     Position getPosition();
-
+    
     EntityType getType() const;
 };
 
 class Item : public Entity {
-private:
+    private:
     std::string name;
-public:
+    public:
     Item(const std::string& itemName,Position pos);
     virtual ~Item() override;
-
+    
     std::string getName() const;
     void setName(const std::string& newName);
 };
 
-class Player : public Entity {
+class Inventory {
 private:
+    std::vector<std::unique_ptr<Item>> items;
+    static constexpr size_t MAX_INV_SIZE = 5;
+public:
+    Inventory();
+    bool addItem(std::unique_ptr<Item> item);
+    void removeItem(const std::string& name);
+    void removeFirstItem();
+    const std::vector<std::unique_ptr<Item>>& getItems() const;
+    size_t getSize() const;
+    size_t getMaxSize() const;
+    bool isEmpty();
+};
+
+class Stats {
+private:
+    double hp;
+    double attack;
     double defense;
-    std::vector<std::unique_ptr<Item>> inventory;
-    static constexpr size_t INVENTORY_SIZE = 5;
     int xp;
     int level;
 public:
-    Player();
-    Player(double hp, double attack, double defense, Position pos);
+    Stats(double hp,double attack, double defense = 2,int xp = 0,int level = 1);
 
+    double getHp() const;
+    void setHp(double amount);
+    double getAttack() const;
+    void setAttack(double newAtt);
     double getDefense() const;
+    void setDefense(double newDef);
     int getXp() const;
     void setXp(int newXp);
-    void setDefense(double newDefense);
-
-    const std::vector<std::unique_ptr<Item>>& getInventory() const;
-    void listInventory();
-    void addItem(std::unique_ptr<Item> item);
-    void removeItem(const std::string& itemName);
-
     int getLevel() const;
-    void setLevel(int newLevel);
-
-    void displayXp();
+    void setLevel(int newLvl);
+};
+class Player : public Entity {
+private:
+    Stats stats;
+    Inventory inventory;
+public:
+    Player(Position pos);
+    Inventory& getInventory();
+    Stats& getStats();
+    const Stats& getStats() const;
 };
 
 class Mob : public Entity {
 private:
     std::string mobname;
+    Stats stats;
+    Inventory inventory;
 public:
-    Mob(const std::string& name, double hp, double attack, Position pos);
+    Mob(const std::string& name,Stats stats,Position pos);
     std::string getMobName() const;
     void setMobName(const std::string& newName);
     virtual std::string getClassName() const override;
-};
-
-class Void : public Entity {
-public:
-    explicit Void(const Position pos = Position(0,0));
+    Stats& getStats();
+    const Stats& getStats() const;
+    
 };
 
 class Heal : public Item {

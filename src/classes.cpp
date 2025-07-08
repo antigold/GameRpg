@@ -11,6 +11,10 @@ int Position::getY() const {return y_;}
 void Position::setX(int newX) {x_ = newX;}
 void Position::setY(int newY) {y_ = newY;}
 
+bool Position::operator==(const Position& other) const {
+    return x_ == other.x_ && y_ == other.y_;
+}
+
 
 //|================================|Class Entity|======================================|
 Entity::Entity(EntityType t, double hp, double attack, Position pos) :

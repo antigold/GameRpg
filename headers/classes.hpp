@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <functional>
 
 enum class EntityType {
     PLAYER,
@@ -11,19 +12,28 @@ enum class EntityType {
     VOID
 };
 
+
 class Position {
-private:
+    private:
     int x_;
     int y_;
-public:
+    public:
     Position(int x,int y);
     ~Position();
     int getX() const;
     int getY() const;
     void setX(int newX);
     void setY(int newY);
+    bool operator==(const Position& other) const;
 };
-
+namespace std {
+    template <>
+    struct hash<Position> {
+        std::size_t operator()(const Position& pos) const {
+            return std::hash<int>()(pos.getX()) ^ (std::hash<int>()(pos.getY()) << 1);
+        }
+    };
+}
 
 class Entity {
     private:

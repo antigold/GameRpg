@@ -3,111 +3,92 @@
 
 //|==========================|Class Board|===============================================|
 
-Board::Board() {
-    for (int i = 0; i < kBoardSize; ++i)
-        for (int j = 0; j < kBoardSize; ++j)
-            board[i][j] = nullptr;
-}
+Board::Board() {}
 
-Board::~Board() {
-    for (int i = 0; i < kBoardSize; ++i) {
-        for (int j = 0; j < kBoardSize; ++j) {
-            if (board[i][j] != nullptr && board[i][j]->getType() != EntityType::PLAYER) {
-                delete board[i][j];
-            }
-            board[i][j] = nullptr;
+Board::~Board() = default;
+
+void Board::setEntity(Position pos, std::shared_ptr<Entity> entity) {
+    if (pos.getX() >= 0 && pos.getX() < kBoardSize &&
+        pos.getY() >= 0 && pos.getY() < kBoardSize) {
+
+        if (entity) {
+            entity->setPosition(pos);
+            entities[pos] = entity;
+        } else {
+            entities.erase(pos);
         }
-    }
-}
 
-void Board::setEntity(Position pos, Entity* entity) {
-
-    int x = pos.getX();
-    int y = pos.getY();
-
-    if (x >= 0 && x < kBoardSize && y >= 0 && y < kBoardSize) {
-        board[x][y] = entity;
-        if (entity != nullptr) {
-            entity->setPosition(Position(x,y));
-        }
     } else {
-        std::cerr << "Position invalide (" << x << ", " << y << ")" << std::endl;
+        std::cerr << "Position invalide (" << pos.getX() << ", " << pos.getY() << ")" << std::endl;
     }
 }
 
-Entity* Board::getEntity(Position pos) const {
 
-    int x = pos.getX();
-    int y = pos.getY();
+std::shared_ptr<Entity> Board::getEntityAt(Position pos) const {
 
-    if (x >= 0 && x < kBoardSize && y >= 0 && y < kBoardSize) {
-        return board[x][y];
+    auto it = entities.find(pos);
+    if (it != entities.end()){
+        return it->second;
     }
-    return nullptr; // retourne nullptr si la position est invalide
+    return nullptr;
 }
 
 void Board::DeleteEntity(Position pos) {
 
-    int x = pos.getX();
-    int y = pos.getY();
-
-    if (x >= 0 && x < kBoardSize && y >= 0 && y < kBoardSize) {
-        if (board[x][y] != nullptr && board[x][y]->getType() != EntityType::PLAYER) {
-            delete board[x][y]; // supprimer uniquement si ce n’est pas un joueur
-        }
-        board[x][y] = nullptr;
+    auto it = entities.find(pos);
+    if (it != entities.end()){
+        entities.erase(it);
     }
 }
 
 
 EntityType Board::getEntityType(Position pos) const {
 
-    int x = pos.getX();
-    int y = pos.getY();
-
-    if (x >= 0 && x < kBoardSize && y >= 0 && y < kBoardSize) {
-        if (board[x][y] == nullptr) {
-            return EntityType::VOID;
-        }
-        return board[x][y]->getType();
+    auto it = entities.find(pos);
+    if (it != entities.end() && it->second){
+        return it->second->getType();
     }
     return EntityType::VOID;
 }
 
-void Board::DrawBoard(SDL_Renderer* renderer,SDL_Texture* PlayerTexture,SDL_Texture* SwordTexture,SDL_Texture* BowTexture, SDL_Texture* MobTexture,SDL_Texture* HealTexture) const {
+void Board::DrawBoard(SDL_Renderer* renderer,
+    SDL_Texture* PlayerTexture,SDL_Texture* SwordTexture,
+    SDL_Texture* BowTexture, SDL_Texture* MobTexture,
+    SDL_Texture* HealTexture) const 
+    {
     for (int i = 0; i < kBoardSize; ++i) {
         for (int j = 0; j < kBoardSize; ++j) {
             SDL_Rect cell = { j * kTilesize, i * kTilesize, kTilesize, kTilesize };
 
-            auto pos = Position(i,j); 
+            Position pos(i,j); 
 
-            Entity* entity = getEntity(pos);
+            auto it = entities.find(pos);
+            std::shared_ptr<Entity> entity = (it != entities.end()) ? it->second : nullptr;
 
-            if (entity && getEntityType(pos) == EntityType::ITEM) {
-                if (auto* sword = dynamic_cast<Sword*>(entity)) {
-                    if (!SwordTexture) {
+            if (entity && entity->getType() == EntityType::ITEM) {
+                if (dynamic_cast<Sword*>(entity.get())) {
+                    if (SwordTexture) {
+                        SDL_RenderCopy(renderer, SwordTexture, nullptr, &cell);
+                    } else {
                         SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
                         SDL_RenderFillRect(renderer, &cell);
                     }
-                    SDL_RenderCopy(renderer, SwordTexture, nullptr, &cell);
-                    sword = nullptr;
                     
-                }
-                else if (auto* bow = dynamic_cast<Bow*>(entity)) {
-                    if (!BowTexture) {
+                } else if (dynamic_cast<Bow*>(entity.get())) {
+                    if (BowTexture) {
+                        SDL_RenderCopy(renderer, BowTexture, nullptr, &cell);
+                    } else {
                         SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
                         SDL_RenderFillRect(renderer, &cell);
                     }
-                    SDL_RenderCopy(renderer, BowTexture, nullptr, &cell);
-                    bow = nullptr;
                 }
-                else if (auto* heal = dynamic_cast<Heal*>(entity)) {
-                    if (!HealTexture) {
+                else if (dynamic_cast<Heal*>(entity.get())) {
+                    if (HealTexture) {
+                        SDL_RenderCopy(renderer, HealTexture, nullptr, &cell);
+                    } else {
                         SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
                         SDL_RenderFillRect(renderer, &cell);
                     }
-                    SDL_RenderCopy(renderer, HealTexture, nullptr, &cell);
-                    heal = nullptr;
                 }
                 else {
                     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // couleur par défaut pour les items

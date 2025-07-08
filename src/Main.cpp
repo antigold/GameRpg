@@ -6,12 +6,13 @@
 int main(int argc, char *argv[]) {
 
 	Board board;
-	Player* player = new Player(kDefault_pos);
-    Mob* Mob1 = new Mob("Teto",Stats(50,5),kDefault_pos);
-    Mob* Mob2 = new Mob("Miku",Stats(50,5),kDefault_pos);
-    Item* Sword_ = new Sword("Sword",5,kDefault_pos);
-    Item* Bow_ = new Bow("Bow",2,5,kDefault_pos);
-    Heal* Heal_ = new Heal("Heal",20,kDefault_pos);
+
+	auto player = std::make_shared<Player>(kDefault_pos);
+    auto Mob1 = std::make_shared<Mob>("Teto", Stats(50, 5), kDefault_pos);
+    auto Mob2 = std::make_shared<Mob>("Miku", Stats(50, 5), kDefault_pos);
+    auto Sword_ = std::make_shared<Sword>("Sword", 5, kDefault_pos);
+    auto Bow_ = std::make_shared<Bow>("Bow", 2, 5, kDefault_pos);
+    auto Heal_ = std::make_shared<Heal>("Heal", 20, kDefault_pos);
 
 	board.setEntity(Position(kBoardSize/2,kBoardSize/2), player);
     board.setEntity(Position(2,16), Heal_);
@@ -136,20 +137,20 @@ int main(int argc, char *argv[]) {
             }
 		}
 		if (is_key_pressed(SDL_SCANCODE_RIGHT)) {
-			MoveRight(player, board);
+			MoveRight(player.get(), board);
 		}
 		if (is_key_pressed(SDL_SCANCODE_LEFT)) {
-			MoveLeft(player, board);
+			MoveLeft(player.get(), board);
 		}
 		if (is_key_pressed(SDL_SCANCODE_UP)) {
-			MoveUp(player, board);
+			MoveUp(player.get(), board);
 		}
 		if (is_key_pressed(SDL_SCANCODE_DOWN)) {
-			MoveDown(player, board);
+			MoveDown(player.get(), board);
 		}
 		board.DrawBoard(renderer, playerTexture,swordTexture,bowTexture,mobTexture,healTexture);
-		board.DrawInfo(renderer, player);
-        board.renderPlayerInfo(renderer,font,player,board);
+		board.DrawInfo(renderer, player.get());
+        board.renderPlayerInfo(renderer,font,player.get(),board);
 		SDL_RenderPresent(renderer);
         SDL_Delay(80);
     }
@@ -159,13 +160,6 @@ int main(int argc, char *argv[]) {
     TTF_CloseFont(font);
     TTF_Quit();
     SDL_Quit();
-
-    delete player;
-    delete Mob1;
-    delete Mob2;
-    delete Sword_;
-    delete Bow_;
-    delete Heal_;
 
     return 0;
 }

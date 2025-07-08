@@ -1,17 +1,16 @@
 #include <iostream>
 #include "game_function.hpp"
-#include "classes.hpp"
 #include "board.hpp"
 
-void HealPlayer(Player* player, double amount) {
+void HealPlayer(std::shared_ptr<Player> player, double amount) {
 	if (amount < 0) {
 		return;
 	}
 	player->getStats().setHp(player->getStats().getHp() + amount);
 }
 
-void HealPlayerOnItem(Player* player, Board& board, Position pos) {
-	Entity* entity = board.getEntity(Position(pos.getX(),pos.getY()));
+void HealPlayerOnItem(std::shared_ptr<Player> player, Board& board, Position pos) {
+	Entity* entity = board.getEntityAt(pos).get();
 	Heal* healItem = dynamic_cast<Heal*>(entity);
 	if (healItem) {
 		HealPlayer(player, healItem->getHealAmount());
@@ -19,7 +18,7 @@ void HealPlayerOnItem(Player* player, Board& board, Position pos) {
 }
 
 void MoveRight(Entity* entity, Board& board) {
-    Player* player = dynamic_cast<Player*>(entity);
+    std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(board.getEntityAt(entity->getPosition()));
     if (!player) return;
 
     auto pos = player->getPosition();
@@ -29,10 +28,9 @@ void MoveRight(Entity* entity, Board& board) {
 
 	Position targetpos = Position(newX,newY); // New position
 
-	Entity* target = board.getEntity(targetpos);
-	if (auto* heal = dynamic_cast<Heal*>(target)) {
+	Entity* target = board.getEntityAt(targetpos).get();
+	if (dynamic_cast<Heal*>(target)) {
     	HealPlayerOnItem(player, board,Position(newX,newY));
-    	delete heal;
 	} else if (board.getEntityType(targetpos) == EntityType::ITEM) {
     	CollectItem(player, board,targetpos);
 	}
@@ -44,7 +42,7 @@ void MoveRight(Entity* entity, Board& board) {
 
 
 void MoveLeft(Entity* entity, Board& board) {
-	Player* player = dynamic_cast<Player*>(entity);
+	std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(board.getEntityAt(entity->getPosition()));
     if (!player) return;
     auto pos = player->getPosition();
     int newX = pos.getX();
@@ -56,10 +54,9 @@ void MoveLeft(Entity* entity, Board& board) {
 
 	Position targetpos = Position(newX,newY);
 
-	Entity* target = board.getEntity(targetpos);
-	if (auto* heal = dynamic_cast<Heal*>(target)) {
+	Entity* target = board.getEntityAt(targetpos).get();
+	if (dynamic_cast<Heal*>(target)) {
     	HealPlayerOnItem(player, board,targetpos);
-    	delete heal;
 	} else if (board.getEntityType(targetpos) == EntityType::ITEM) {
     	CollectItem(player, board,targetpos);
 	}
@@ -71,7 +68,7 @@ void MoveLeft(Entity* entity, Board& board) {
 
 
 void MoveUp(Entity* entity, Board& board) {
-	Player* player = dynamic_cast<Player*>(entity);
+	std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(board.getEntityAt(entity->getPosition()));
     if (!player) return;
 	auto pos = player->getPosition();
 	int newX = pos.getX() - 1;
@@ -83,10 +80,9 @@ void MoveUp(Entity* entity, Board& board) {
 
 	Position targetpos = Position(newX,newY);
 
-	Entity* target = board.getEntity(targetpos);
-	if (auto* heal = dynamic_cast<Heal*>(target)) {
+	Entity* target = board.getEntityAt(targetpos).get();
+	if (dynamic_cast<Heal*>(target)) {
     	HealPlayerOnItem(player, board,Position(newX,newY));
-    	delete heal;
 	} else if (board.getEntityType(targetpos) == EntityType::ITEM) {
     	CollectItem(player, board,targetpos);
 	}
@@ -97,7 +93,7 @@ void MoveUp(Entity* entity, Board& board) {
 }
 
 void MoveDown(Entity* entity, Board& board) {
-    Player* player = dynamic_cast<Player*>(entity);
+    std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(board.getEntityAt(entity->getPosition()));
     if (!player) return;
 
     auto pos = player->getPosition();
@@ -110,10 +106,9 @@ void MoveDown(Entity* entity, Board& board) {
 
 	Position targetpos = Position(newX,newY);
 
-    Entity* target = board.getEntity(targetpos);
-	if (auto* heal = dynamic_cast<Heal*>(target)) {
+    Entity* target = board.getEntityAt(targetpos).get();
+	if (dynamic_cast<Heal*>(target)) {
     	HealPlayerOnItem(player, board,targetpos);
-    	delete heal;
 	} else if (board.getEntityType(targetpos) == EntityType::ITEM) {
     	CollectItem(player, board, targetpos);
 	}
@@ -125,9 +120,9 @@ void MoveDown(Entity* entity, Board& board) {
 }
 
 
-void CollectItem(Player* player, Board& board,Position pos) {
+void CollectItem(std::shared_ptr<Player> player, Board& board,Position pos) {
 	Position entity_pos = Position(pos.getX(),pos.getY());
-    Entity* entity = board.getEntity(entity_pos);
+    Entity* entity = board.getEntityAt(entity_pos).get();
     Item* item = dynamic_cast<Item*>(entity);
     if (item) {
         board.setEntity(entity_pos, nullptr); // Remove from board
@@ -140,7 +135,7 @@ bool IsPlayerNearMob(Player* player, Board& board) {
 	for (int x = playerPos.getX() - 2; x <= playerPos.getX() + 2; ++x) {
 		for (int y = playerPos.getY() - 2; y <= playerPos.getY() + 2; ++y) {
 			if (x >= 0 && x < kBoardSize && y >= 0 && y < kBoardSize) {
-				Entity* entity = board.getEntity(Position(x,y));
+				Entity* entity = board.getEntityAt(Position(x,y)).get();
 				if (entity && entity->getType() == EntityType::MOB) {
 					return true;
 				}
@@ -155,7 +150,7 @@ Mob* getNearMob(Player* player, Board& board) {
 	for (int x = playerPos.getX() - 2; x <= playerPos.getX() + 2; ++x) {
 		for (int y = playerPos.getY() - 2; y <= playerPos.getY() + 2; ++y) {
 			if (x >= 0 && x < kBoardSize && y >= 0 && y < kBoardSize) {
-				Entity* entity = board.getEntity(Position(x,y));
+				Entity* entity = board.getEntityAt(Position(x,y)).get();
 				if (entity && entity->getType() == EntityType::MOB) {
 					return dynamic_cast<Mob*>(entity);
 				}

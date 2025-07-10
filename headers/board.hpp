@@ -12,6 +12,11 @@
 const int kBoardSize = 19;
 const int kTilesize = 32;
 
+/**
+ * @class Board
+ * @brief this class contains the board and all the entities of the game
+ * @param entities Contains all the entities of the board
+ */
 class Board {
 private:
     std::unordered_map<Position,std::shared_ptr<Entity>> entities;

@@ -5,6 +5,10 @@
 #include <string>
 #include <functional>
 
+/**
+ * @enum EntityType
+ * @brief Enum class that represent the Type of the Entity: Player,Mob,Item
+ */
 enum class EntityType {
     PLAYER,
     MOB,
@@ -12,7 +16,12 @@ enum class EntityType {
     VOID
 };
 
-
+/**
+ * @class Position
+ * @brief Represent a position on the board.
+ * @param x_ X coord
+ * @param y_ Y coord
+ */
 class Position {
     private:
     int x_;

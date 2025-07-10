@@ -44,6 +44,14 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    TTF_Font* TitleFont = TTF_OpenFont("assets/fonts/Beach-Ball.ttf",30);
+    if (!TitleFont) {
+        std::cerr << "Failed to load font: " << TTF_GetError() << std::endl;
+        TTF_Quit();
+        SDL_Quit();
+        return 1;
+    }
+
     SDL_Surface* PlayerSurface = IMG_Load("assets/images/Miku_forgor.png");
     if (!PlayerSurface) {
         std::cerr << "Failed to load player image: " << IMG_GetError() << std::endl;
@@ -127,6 +135,8 @@ int main(int argc, char *argv[]) {
     SDL_FreeSurface(MobSurface);
     SDL_FreeSurface(HealSurface);
 
+    // Set the Gamestate in Title screen
+    GameState currentState = GameState::TITLE;
 
     SDL_Event e;
     int quit = 0;
@@ -134,32 +144,52 @@ int main(int argc, char *argv[]) {
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT){
                 quit = 1;
+                SDL_DestroyRenderer(renderer);
+                SDL_DestroyWindow(window);
+                TTF_CloseFont(font);
+                TTF_CloseFont(TitleFont);
+                TTF_Quit();
+                SDL_Quit();
             }
 		}
-		if (is_key_pressed(SDL_SCANCODE_RIGHT)) {
-			MoveRight(player.get(), board);
-		}
-		if (is_key_pressed(SDL_SCANCODE_LEFT)) {
-			MoveLeft(player.get(), board);
-		}
-		if (is_key_pressed(SDL_SCANCODE_UP)) {
-			MoveUp(player.get(), board);
-		}
-		if (is_key_pressed(SDL_SCANCODE_DOWN)) {
-			MoveDown(player.get(), board);
-		}
-		board.DrawBoard(renderer, playerTexture,swordTexture,bowTexture,mobTexture,healTexture);
-		board.DrawInfo(renderer, player.get());
-        board.renderPlayerInfo(renderer,font,player.get(),board);
-		SDL_RenderPresent(renderer);
-        SDL_Delay(80);
+
+        if (is_key_pressed(SDL_SCANCODE_ESCAPE)){
+            quit = 1;
+            SDL_DestroyRenderer(renderer);
+            SDL_DestroyWindow(window);
+            TTF_CloseFont(font);
+            TTF_CloseFont(TitleFont);
+            TTF_Quit();
+            SDL_Quit();
+        }
+
+        if (currentState == GameState::TITLE){
+            if (is_key_pressed(SDL_SCANCODE_SPACE)){
+                currentState = GameState::FREE;
+            }
+            board.drawTitleScreen(renderer,TitleFont);
+            SDL_RenderPresent(renderer);
+            SDL_Delay(20);
+        }
+        if (currentState == GameState::FREE){
+            if (is_key_pressed(SDL_SCANCODE_RIGHT)) {
+			    MoveRight(player.get(), board);
+		    }
+		    if (is_key_pressed(SDL_SCANCODE_LEFT)) {
+			    MoveLeft(player.get(), board);
+		    }
+		    if (is_key_pressed(SDL_SCANCODE_UP)) {
+			    MoveUp(player.get(), board);
+		    }
+		    if (is_key_pressed(SDL_SCANCODE_DOWN)) {
+			    MoveDown(player.get(), board);
+		    }
+		    board.DrawBoard(renderer, playerTexture,swordTexture,bowTexture,mobTexture,healTexture);
+		    board.DrawInfo(renderer, player.get());
+            board.renderPlayerInfo(renderer,font,player.get(),board);
+		    SDL_RenderPresent(renderer);
+            SDL_Delay(80);
+        }
     }
-
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    TTF_CloseFont(font);
-    TTF_Quit();
-    SDL_Quit();
-
     return 0;
 }

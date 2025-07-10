@@ -16,5 +16,6 @@ void MoveDown(Entity* entity, Board& board);
 void CollectItem(std::shared_ptr<Player> player, Board& board,Position pos);
 bool IsPlayerNearMob(Player* player, Board& board);
 Mob* getNearMob(Player* player,Board& board);
+bool isMobAt(Position pos,Board& board);
 
 #endif

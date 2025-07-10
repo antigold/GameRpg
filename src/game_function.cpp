@@ -1,6 +1,7 @@
 #include <iostream>
 #include "game_function.hpp"
 #include "board.hpp"
+#include "combat.hpp"
 
 void HealPlayer(std::shared_ptr<Player> player, double amount) {
 	if (amount < 0) {
@@ -33,6 +34,8 @@ void MoveRight(Entity* entity, Board& board) {
     	HealPlayerOnItem(player, board,Position(newX,newY));
 	} else if (board.getEntityType(targetpos) == EntityType::ITEM) {
     	CollectItem(player, board,targetpos);
+	} else if (isMobAt(targetpos,board)){
+		StartFight(board);
 	}
 
     board.setEntity(targetpos, player);
@@ -59,6 +62,8 @@ void MoveLeft(Entity* entity, Board& board) {
     	HealPlayerOnItem(player, board,targetpos);
 	} else if (board.getEntityType(targetpos) == EntityType::ITEM) {
     	CollectItem(player, board,targetpos);
+	} else if (isMobAt(targetpos,board)){
+		StartFight(board);
 	}
 
     board.setEntity(targetpos, player);
@@ -85,6 +90,8 @@ void MoveUp(Entity* entity, Board& board) {
     	HealPlayerOnItem(player, board,Position(newX,newY));
 	} else if (board.getEntityType(targetpos) == EntityType::ITEM) {
     	CollectItem(player, board,targetpos);
+	} else if (isMobAt(targetpos,board)){
+		StartFight(board);
 	}
 	
 	board.setEntity(targetpos, player);
@@ -111,6 +118,8 @@ void MoveDown(Entity* entity, Board& board) {
     	HealPlayerOnItem(player, board,targetpos);
 	} else if (board.getEntityType(targetpos) == EntityType::ITEM) {
     	CollectItem(player, board, targetpos);
+	} else if (isMobAt(targetpos,board)){
+		StartFight(board);
 	}
 
 
@@ -160,3 +169,9 @@ Mob* getNearMob(Player* player, Board& board) {
 	return nullptr;
 }
 
+bool isMobAt(Position pos, Board& board){
+	if (board.getEntityType(pos) == EntityType::MOB){
+		return true;
+	}
+	return false;
+}

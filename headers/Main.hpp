@@ -5,6 +5,7 @@
 #include <SDL_image.h>
 #include "game_function.hpp"
 #include "entity_spawn.hpp"
+#include "combat.hpp"
 
 
 const Position kDefault_pos = Position(0,0);

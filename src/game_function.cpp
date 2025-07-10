@@ -33,9 +33,10 @@ void MoveRight(Entity* entity, Board& board) {
 	if (dynamic_cast<Heal*>(target)) {
     	HealPlayerOnItem(player, board,Position(newX,newY));
 	} else if (board.getEntityType(targetpos) == EntityType::ITEM) {
-    	CollectItem(player, board,targetpos);
+    	CollectItem(player,board,targetpos);
 	} else if (isMobAt(targetpos,board)){
-		StartFight(board);
+		std::shared_ptr<Mob> MobTarget = std::dynamic_pointer_cast<Mob>(board.getEntityAt(targetpos));
+		StartFight(board,player,MobTarget);
 	}
 
     board.setEntity(targetpos, player);
@@ -63,7 +64,8 @@ void MoveLeft(Entity* entity, Board& board) {
 	} else if (board.getEntityType(targetpos) == EntityType::ITEM) {
     	CollectItem(player, board,targetpos);
 	} else if (isMobAt(targetpos,board)){
-		StartFight(board);
+		std::shared_ptr<Mob> MobTarget = std::dynamic_pointer_cast<Mob>(board.getEntityAt(targetpos));
+		StartFight(board,player,MobTarget);
 	}
 
     board.setEntity(targetpos, player);
@@ -91,7 +93,8 @@ void MoveUp(Entity* entity, Board& board) {
 	} else if (board.getEntityType(targetpos) == EntityType::ITEM) {
     	CollectItem(player, board,targetpos);
 	} else if (isMobAt(targetpos,board)){
-		StartFight(board);
+		std::shared_ptr<Mob> MobTarget = std::dynamic_pointer_cast<Mob>(board.getEntityAt(targetpos));
+		StartFight(board,player,MobTarget);
 	}
 	
 	board.setEntity(targetpos, player);
@@ -119,7 +122,8 @@ void MoveDown(Entity* entity, Board& board) {
 	} else if (board.getEntityType(targetpos) == EntityType::ITEM) {
     	CollectItem(player, board, targetpos);
 	} else if (isMobAt(targetpos,board)){
-		StartFight(board);
+		std::shared_ptr<Mob> MobTarget = std::dynamic_pointer_cast<Mob>(board.getEntityAt(targetpos));
+		StartFight(board,player,MobTarget);
 	}
 
 

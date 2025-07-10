@@ -8,4 +8,4 @@ enum class GameState {
     //TODO maybe a pause mode
 };
 
-void StartFight(Board& board);
+void StartFight(Board& board,std::shared_ptr<Player> player, std::shared_ptr<Mob> mob);

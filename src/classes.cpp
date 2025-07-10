@@ -161,6 +161,39 @@ const Stats& Player::getStats() const {
     return stats;
 }
 
+void Player::attack(std::shared_ptr<Mob> mob) {
+
+    double attack = getStats().getAttack();
+    double defense = mob->getStats().getDefense();
+    double damage = attack * (100.0 / (100.0 + defense));
+
+    double mobHp = mob->getStats().getHp();
+    mobHp -= damage;
+    if (mobHp < 0) mobHp = 0;
+
+    mob->getStats().setHp(mobHp);
+}
+
+
+bool Player::isPlayerProtecting() const {
+    return isProtecting;
+}
+
+void Player::setPlayerProtecting(bool e){
+    isProtecting = e;
+}
+
+double Player::protect(double attackAmount){
+    if (!isPlayerProtecting()){
+        return 0;
+    }
+    double defense = getStats().getDefense();
+    double damageReductionFactor = 0.5; // 50% en mode protect
+    double newAttackAmount = attackAmount * (100.0 / (100.0 + defense)) * damageReductionFactor;
+
+    return newAttackAmount;
+}
+
 //|================================|Class Mob|======================================|
 
 Mob::Mob(const std::string& name,Stats Stats,Position pos) : Entity(EntityType::MOB,25.0,3.0,pos), mobname(name),
@@ -177,6 +210,25 @@ Stats& Mob::getStats() {
 const Stats& Mob::getStats() const {
     return stats;
 }
+
+void Mob::attackPlayer(std::shared_ptr<Player> player) {
+    double attackAmount = getStats().getAttack();
+    double finalDamage;
+
+    if (player->isPlayerProtecting()) {
+        finalDamage = player->protect(attackAmount);
+    } else {
+        double defense = player->getStats().getDefense();
+        finalDamage = attackAmount * (100.0 / (100.0 + defense));
+    }
+
+    double playerHp = player->getStats().getHp();
+    playerHp -= finalDamage;
+    if (playerHp < 0) playerHp = 0;
+
+    player->getStats().setHp(playerHp);
+}
+
 
 //|================================|Class Heal|======================================|
 

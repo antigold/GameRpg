@@ -91,16 +91,16 @@ public:
 
 class Stats {
 private:
-    double hp;
+    int hp;
     double attack;
     double defense;
     int xp;
     int level;
 public:
-    Stats(double hp,double attack, double defense = 2,int xp = 0,int level = 1);
+    Stats(int hp,double attack, double defense = 2,int xp = 0,int level = 1);
 
-    double getHp() const;
-    void setHp(double amount);
+    int getHp() const;
+    void setHp(int amount);
     double getAttack() const;
     void setAttack(double newAtt);
     double getDefense() const;

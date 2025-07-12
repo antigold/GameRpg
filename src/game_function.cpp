@@ -3,7 +3,7 @@
 #include "board.hpp"
 #include "combat.hpp"
 
-void HealPlayer(std::shared_ptr<Player> player, double amount) {
+void HealPlayer(std::shared_ptr<Player> player, int amount) {
 	if (amount < 0) {
 		return;
 	}
@@ -18,7 +18,12 @@ void HealPlayerOnItem(std::shared_ptr<Player> player, Board& board, Position pos
 	}
 }
 
-void MoveRight(Entity* entity, Board& board) {
+void MoveRight(Entity* entity, Board& board,
+               SDL_Renderer* renderer,
+               TTF_Font* font,
+               SDL_Texture* playerTexture,
+               SDL_Texture* mobTexture) {
+
     std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(board.getEntityAt(entity->getPosition()));
     if (!player) return;
 
@@ -36,7 +41,7 @@ void MoveRight(Entity* entity, Board& board) {
     	CollectItem(player,board,targetpos);
 	} else if (isMobAt(targetpos,board)){
 		std::shared_ptr<Mob> MobTarget = std::dynamic_pointer_cast<Mob>(board.getEntityAt(targetpos));
-		StartFight(board,player,MobTarget);
+		StartFight(board,player,MobTarget,renderer,font,playerTexture,mobTexture);
 	}
 
     board.setEntity(targetpos, player);
@@ -45,7 +50,12 @@ void MoveRight(Entity* entity, Board& board) {
 }
 
 
-void MoveLeft(Entity* entity, Board& board) {
+void MoveLeft(Entity* entity, Board& board,
+               SDL_Renderer* renderer,
+               TTF_Font* font,
+               SDL_Texture* playerTexture,
+               SDL_Texture* mobTexture) {
+
 	std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(board.getEntityAt(entity->getPosition()));
     if (!player) return;
     auto pos = player->getPosition();
@@ -65,7 +75,7 @@ void MoveLeft(Entity* entity, Board& board) {
     	CollectItem(player, board,targetpos);
 	} else if (isMobAt(targetpos,board)){
 		std::shared_ptr<Mob> MobTarget = std::dynamic_pointer_cast<Mob>(board.getEntityAt(targetpos));
-		StartFight(board,player,MobTarget);
+		StartFight(board,player,MobTarget,renderer,font,playerTexture,mobTexture);
 	}
 
     board.setEntity(targetpos, player);
@@ -74,7 +84,12 @@ void MoveLeft(Entity* entity, Board& board) {
 }
 
 
-void MoveUp(Entity* entity, Board& board) {
+void MoveUp(Entity* entity, Board& board,
+               SDL_Renderer* renderer,
+               TTF_Font* font,
+               SDL_Texture* playerTexture,
+               SDL_Texture* mobTexture) {
+
 	std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(board.getEntityAt(entity->getPosition()));
     if (!player) return;
 	auto pos = player->getPosition();
@@ -94,7 +109,7 @@ void MoveUp(Entity* entity, Board& board) {
     	CollectItem(player, board,targetpos);
 	} else if (isMobAt(targetpos,board)){
 		std::shared_ptr<Mob> MobTarget = std::dynamic_pointer_cast<Mob>(board.getEntityAt(targetpos));
-		StartFight(board,player,MobTarget);
+		StartFight(board,player,MobTarget,renderer,font,playerTexture,mobTexture);
 	}
 	
 	board.setEntity(targetpos, player);
@@ -102,7 +117,12 @@ void MoveUp(Entity* entity, Board& board) {
 	player->setPosition(targetpos);
 }
 
-void MoveDown(Entity* entity, Board& board) {
+void MoveDown(Entity* entity, Board& board,
+               SDL_Renderer* renderer,
+               TTF_Font* font,
+               SDL_Texture* playerTexture,
+               SDL_Texture* mobTexture) {
+
     std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(board.getEntityAt(entity->getPosition()));
     if (!player) return;
 
@@ -123,7 +143,7 @@ void MoveDown(Entity* entity, Board& board) {
     	CollectItem(player, board, targetpos);
 	} else if (isMobAt(targetpos,board)){
 		std::shared_ptr<Mob> MobTarget = std::dynamic_pointer_cast<Mob>(board.getEntityAt(targetpos));
-		StartFight(board,player,MobTarget);
+		StartFight(board,player,MobTarget,renderer,font,playerTexture,mobTexture);
 	}
 
 

@@ -8,8 +8,8 @@ int main(int argc, char *argv[]) {
 	Board board;
 
 	auto player = std::make_shared<Player>(kDefault_pos);
-    auto Mob1 = std::make_shared<Mob>("Teto", Stats(50, 5), kDefault_pos);
-    auto Mob2 = std::make_shared<Mob>("Miku", Stats(50, 5), kDefault_pos);
+    auto Mob1 = std::make_shared<Mob>("Teto", Stats(50,5), kDefault_pos);
+    auto Mob2 = std::make_shared<Mob>("Miku", Stats(50,5), kDefault_pos);
     auto Sword_ = std::make_shared<Sword>("Sword", 5, kDefault_pos);
     auto Bow_ = std::make_shared<Bow>("Bow", 2, 5, kDefault_pos);
     auto Heal_ = std::make_shared<Heal>("Heal", 20, kDefault_pos);
@@ -173,16 +173,16 @@ int main(int argc, char *argv[]) {
         }
         if (currentState == GameState::FREE){
             if (is_key_pressed(SDL_SCANCODE_RIGHT)) {
-			    MoveRight(player.get(), board);
+			    MoveRight(player.get(), board,renderer,font,playerTexture,mobTexture);
 		    }
 		    if (is_key_pressed(SDL_SCANCODE_LEFT)) {
-			    MoveLeft(player.get(), board);
+			    MoveLeft(player.get(), board,renderer,font,playerTexture,mobTexture);
 		    }
 		    if (is_key_pressed(SDL_SCANCODE_UP)) {
-			    MoveUp(player.get(), board);
+			    MoveUp(player.get(), board,renderer,font,playerTexture,mobTexture);
 		    }
 		    if (is_key_pressed(SDL_SCANCODE_DOWN)) {
-			    MoveDown(player.get(), board);
+			    MoveDown(player.get(), board,renderer,font,playerTexture,mobTexture);
 		    }
 		    board.DrawBoard(renderer, playerTexture,swordTexture,bowTexture,mobTexture,healTexture);
 		    board.DrawInfo(renderer, player.get());

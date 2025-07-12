@@ -98,14 +98,14 @@ bool Inventory::isEmpty() {
 
 //|================================|Class Stats|=======================================|
 
-Stats::Stats(double hp,double attack,double defense,int xp,int level) : hp(hp), attack(attack), defense(defense),
+Stats::Stats(int hp,double attack,double defense,int xp,int level) : hp(hp), attack(attack), defense(defense),
 xp(xp), level(level) {}
 
-double Stats::getHp() const {
+int Stats::getHp() const {
     return hp;
 }
 
-void Stats::setHp(double amount){
+void Stats::setHp(int amount){
     hp = amount;
 }
 

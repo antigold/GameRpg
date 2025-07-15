@@ -92,9 +92,11 @@ void StartFight(Board& board, std::shared_ptr<Player> player, std::shared_ptr<Mo
                 player->attack(mob);
                 player->setPlayerProtecting(false);
                 currentTurn = Turn::MOB;
+                //SDL_Delay(1000);
             } else if (is_key_pressed(SDL_SCANCODE_P)) {
                 player->setPlayerProtecting(true);
                 currentTurn = Turn::MOB;
+                //SDL_Delay(1000);
             }
         } else if (currentTurn == Turn::MOB) {
             if (player->isPlayerProtecting()) {
@@ -103,7 +105,7 @@ void StartFight(Board& board, std::shared_ptr<Player> player, std::shared_ptr<Mo
                 mob->attackPlayer(player);
             }
             currentTurn = Turn::PLAYER;
-            SDL_Delay(3000);
+            SDL_Delay(1000);
         }
     }
 }

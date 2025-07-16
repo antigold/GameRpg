@@ -22,10 +22,10 @@ int main(int argc, char *argv[]) {
     Position randomPosItem = generateRandomItemPosition(kBoardSize, board);
     Position randomPosBow = generateRandomItemPosition(kBoardSize, board);
     
-    board.setEntity(Position(randomPos.getX(),randomPos.getY()), Mob1);
-    board.setEntity(Position(randomPos2.getX(), randomPos2.getY()), Mob2);
-    board.setEntity(Position(randomPosItem.getX(), randomPosItem.getY()), Sword_);
-    board.setEntity(Position(randomPosBow.getX(), randomPosBow.getY()), Bow_);
+    board.setEntity(Position(randomPos.x,randomPos.y), Mob1);
+    board.setEntity(Position(randomPos2.x, randomPos2.y), Mob2);
+    board.setEntity(Position(randomPosItem.x, randomPosItem.y), Sword_);
+    board.setEntity(Position(randomPosBow.x, randomPosBow.y), Bow_);
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         return 1;

@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     auto Sword_ = std::make_shared<Sword>("Sword", 5, kDefault_pos);
     auto Bow_ = std::make_shared<Bow>("Bow", 2, 5, kDefault_pos);
     auto Heal_ = std::make_shared<Heal>("Heal", 5, kDefault_pos);
-    auto Heal2_ = std::make_shared<Heal>("Heal", 5, kDefault_pos);
+    auto Heal2_ = std::make_shared<Heal>("Heal", 5.0, kDefault_pos);
 
 	board.setEntity(Position(kBoardSize/2,kBoardSize/2), player);
     board.setEntity(Position(2,16), Heal_);

@@ -7,6 +7,10 @@ void HealPlayer(std::shared_ptr<Player> player, int amount) {
 	if (amount < 0) {
 		return;
 	}
+	if (player->getStats().hp >= player->getMaxHp() || amount >= player->getMaxHp()){
+		std::cout<<"Max hp, can't heal anymore"<<std::endl;
+		return;
+	}
 	player->getStats().hp += amount;
 }
 

@@ -105,6 +105,7 @@ private:
     Stats stats;
     Inventory inventory;
     bool isProtecting = false;
+    int maxHp = 30;
 public:
     Player(Position pos);
     Inventory& getInventory();
@@ -114,12 +115,15 @@ public:
     double protect(double attackAmount);
     bool isPlayerProtecting() const;
     void setPlayerProtecting(bool e);
+    int getMaxHp() const;
+    void setMaxHp(int newMHp);
 };
 class Mob : public Entity {
 private:
     std::string mobname;
     Stats stats;
     Inventory inventory;
+    int maxHp = 30;
 public:
     Mob(const std::string& name,Stats stats,Position pos);
     std::string getMobName() const;
@@ -128,6 +132,8 @@ public:
     Stats& getStats();
     const Stats& getStats() const;
     void attackPlayer(std::shared_ptr<Player> player);
+    int getMaxHp() const;
+    void setMaxHp(int newMHp);
 };
 
 class Heal : public Item {

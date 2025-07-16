@@ -31,8 +31,8 @@ void displayCombat(SDL_Renderer* renderer, TTF_Font* font,
     SDL_RenderCopy(renderer, mobTexture, NULL, &mobRect);
 
     // Affiche les HP
-    std::string playerHpText = "Player HP: " + std::to_string((int)player->getStats().hp) + "/200";
-    std::string mobHpText = "Mob HP: " + std::to_string((int)mob->getStats().hp)+ "/50";
+    std::string playerHpText = "Player HP: " + std::to_string((int)player->getStats().hp) + "/" + std::to_string(player->getMaxHp());
+    std::string mobHpText = "Enemy HP: " + std::to_string((int)mob->getStats().hp)+ "/" + std::to_string(mob->getMaxHp());
     renderText(renderer,font,"Press A/Q to attack",100,500,white);
     renderText(renderer,font,"Press P to protect",300,500,white);
 
@@ -97,7 +97,7 @@ void StartFight(Board& board, std::shared_ptr<Player> player, std::shared_ptr<Mo
             } else if (is_key_pressed(SDL_SCANCODE_P)) {
                 player->setPlayerProtecting(true);
                 currentTurn = Turn::MOB;
-                
+
             }
         } else if (currentTurn == Turn::MOB) {
             
@@ -109,6 +109,6 @@ void StartFight(Board& board, std::shared_ptr<Player> player, std::shared_ptr<Mo
     }
 }
 
-//TODO: regler le combat, le delai, l'IG,l'XP et gain de niveau.
+//TODO: le delai, l'IG,l'XP et gain de niveau.
 
 

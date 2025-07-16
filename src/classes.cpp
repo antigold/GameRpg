@@ -84,8 +84,8 @@ bool Inventory::isEmpty() {
 //|================================|Class Player|======================================|
 
 Player::Player(Position pos)
-    : Entity(EntityType::PLAYER,100.0,5,pos),
-    stats(100.0,5.0,3.0),
+    : Entity(EntityType::PLAYER,20,5,pos),
+    stats(20,5.0,3.0),
     inventory() {}
 
 Inventory& Player::getInventory() {
@@ -132,6 +132,14 @@ double Player::protect(double attackAmount){
     return newAttackAmount;
 }
 
+int Player::getMaxHp() const {
+    return maxHp;
+}
+
+void Player::setMaxHp(int newMHp){
+    maxHp = newMHp;
+}
+
 //|================================|Class Mob|======================================|
 
 Mob::Mob(const std::string& name,Stats Stats,Position pos) : Entity(EntityType::MOB,25.0,3.0,pos), mobname(name),
@@ -165,6 +173,14 @@ void Mob::attackPlayer(std::shared_ptr<Player> player) {
     if (playerHp < 0) playerHp = 0;
 
     player->getStats().hp = playerHp;
+}
+
+int Mob::getMaxHp() const {
+    return maxHp;
+}
+
+void Mob::setMaxHp(int newMHp){
+    maxHp = newMHp;
 }
 
 

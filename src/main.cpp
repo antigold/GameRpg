@@ -12,10 +12,12 @@ int main(int argc, char *argv[]) {
     auto Mob2 = std::make_shared<Mob>("Miku", Stats(50,5), kDefault_pos);
     auto Sword_ = std::make_shared<Sword>("Sword", 5, kDefault_pos);
     auto Bow_ = std::make_shared<Bow>("Bow", 2, 5, kDefault_pos);
-    auto Heal_ = std::make_shared<Heal>("Heal", 20, kDefault_pos);
+    auto Heal_ = std::make_shared<Heal>("Heal", 5, kDefault_pos);
+    auto Heal2_ = std::make_shared<Heal>("Heal", 5, kDefault_pos);
 
 	board.setEntity(Position(kBoardSize/2,kBoardSize/2), player);
     board.setEntity(Position(2,16), Heal_);
+    board.setEntity(Position(5,10),Heal2_);
     
     Position randomPos = generateRandomPosition(kBoardSize, board);
     Position randomPos2 = generateRandomPosition(kBoardSize, board);

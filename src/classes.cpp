@@ -1,21 +1,6 @@
 #include "classes.hpp"
 #include <iostream>
 
-//|===============================|Class Position|====================================|
-
-Position::Position(int x,int y) : x_(x), y_(y) {}
-Position::~Position() {}
-
-int Position::getX() const {return x_;}
-int Position::getY() const {return y_;}
-void Position::setX(int newX) {x_ = newX;}
-void Position::setY(int newY) {y_ = newY;}
-
-bool Position::operator==(const Position& other) const {
-    return x_ == other.x_ && y_ == other.y_;
-}
-
-
 //|================================|Class Entity|======================================|
 Entity::Entity(EntityType t, double hp, double attack, Position pos) :
     type(t), hp(hp), attack(attack), Pos(pos) {}
@@ -27,11 +12,11 @@ bool Entity::isAlive() const {
 }
 
 void Entity::setPosition(Position pos) {
-    if (pos.getX() < 0 || pos.getY() < 0) {
+    if (pos.x < 0 || pos.y < 0) {
         std::cout << "Position cannot be negative. Setting to (0, 0)." << std::endl;
         Pos = Position(0,0);
     } else {
-        Pos = Position(pos.getX(),pos.getY());
+        Pos = Position(pos.x,pos.y);
     }
 }
 
@@ -96,52 +81,6 @@ bool Inventory::isEmpty() {
     return items.empty();
 }
 
-//|================================|Class Stats|=======================================|
-
-Stats::Stats(int hp,double attack,double defense,int xp,int level) : hp(hp), attack(attack), defense(defense),
-xp(xp), level(level) {}
-
-int Stats::getHp() const {
-    return hp;
-}
-
-void Stats::setHp(int amount){
-    hp = amount;
-}
-
-double Stats::getAttack() const {
-    return attack;
-}
-
-void Stats::setAttack(double newAtt){
-    attack = newAtt;
-}
-
-double Stats::getDefense() const {
-    return defense;
-}
-
-void Stats::setDefense(double newDef){
-    defense = newDef;
-}
-
-int Stats::getXp() const {
-    return xp;
-}
-
-void Stats::setXp(int newXp){
-    xp = newXp;
-}
-
-int Stats::getLevel() const {
-    return level;
-}
-
-void Stats::setLevel(int newLvl) {
-    level = newLvl;
-}
-
-
 //|================================|Class Player|======================================|
 
 Player::Player(Position pos)
@@ -163,15 +102,15 @@ const Stats& Player::getStats() const {
 
 void Player::attack(std::shared_ptr<Mob> mob) {
 
-    double attack = getStats().getAttack();
-    double defense = mob->getStats().getDefense();
+    double attack = getStats().attack;
+    double defense = mob->getStats().defense;
     double damage = attack * (100.0 / (100.0 + defense));
 
-    double mobHp = mob->getStats().getHp();
+    double mobHp = mob->getStats().hp;
     mobHp -= damage;
     if (mobHp < 0) mobHp = 0;
 
-    mob->getStats().setHp(mobHp);
+    mob->getStats().hp = mobHp;
 }
 
 
@@ -187,7 +126,7 @@ double Player::protect(double attackAmount){
     if (!isPlayerProtecting()){
         return 0;
     }
-    double defense = getStats().getDefense();
+    double defense = getStats().defense;
     double damageReductionFactor = 0.5; // 50% en mode protect
     double newAttackAmount = attackAmount * (100.0 / (100.0 + defense)) * damageReductionFactor;
 
@@ -212,21 +151,21 @@ const Stats& Mob::getStats() const {
 }
 
 void Mob::attackPlayer(std::shared_ptr<Player> player) {
-    double attackAmount = getStats().getAttack();
+    double attackAmount = getStats().attack;
     double finalDamage;
 
     if (player->isPlayerProtecting()) {
         finalDamage = player->protect(attackAmount);
     } else {
-        double defense = player->getStats().getDefense();
+        double defense = player->getStats().defense;
         finalDamage = attackAmount * (100.0 / (100.0 + defense));
     }
 
-    double playerHp = player->getStats().getHp();
+    double playerHp = player->getStats().hp;
     playerHp -= finalDamage;
     if (playerHp < 0) playerHp = 0;
 
-    player->getStats().setHp(playerHp);
+    player->getStats().hp = playerHp;
 }
 
 

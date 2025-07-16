@@ -31,8 +31,8 @@ void displayCombat(SDL_Renderer* renderer, TTF_Font* font,
     SDL_RenderCopy(renderer, mobTexture, NULL, &mobRect);
 
     // Affiche les HP
-    std::string playerHpText = "Player HP: " + std::to_string((int)player->getStats().getHp()) + "/200";
-    std::string mobHpText = "Mob HP: " + std::to_string((int)mob->getStats().getHp())+ "/50";
+    std::string playerHpText = "Player HP: " + std::to_string((int)player->getStats().hp) + "/200";
+    std::string mobHpText = "Mob HP: " + std::to_string((int)mob->getStats().hp)+ "/50";
     renderText(renderer,font,"Press A/Q to attack",100,500,white);
     renderText(renderer,font,"Press P to protect",300,500,white);
 
@@ -81,7 +81,7 @@ void StartFight(Board& board, std::shared_ptr<Player> player, std::shared_ptr<Mo
         }
         displayCombat(renderer, font, playerTexture, mobTexture, player, mob,currentTurn);
 
-        if (player->getStats().getHp() <= 0 || mob->getStats().getHp() <= 0) {
+        if (player->getStats().hp <= 0 || mob->getStats().hp <= 0) {
             isCombatOver = true;
             break;
         }
@@ -98,7 +98,7 @@ void StartFight(Board& board, std::shared_ptr<Player> player, std::shared_ptr<Mo
             }
         } else if (currentTurn == Turn::MOB) {
             if (player->isPlayerProtecting()) {
-                player->protect(mob->getStats().getAttack());
+                player->protect(mob->getStats().attack);
             } else {
                 mob->attackPlayer(player);
             }

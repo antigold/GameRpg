@@ -17,29 +17,27 @@ enum class EntityType {
 };
 
 /**
- * @class Position
+ * @struct Position
  * @brief Represent a position on the board.
- * @param x_ X coord
- * @param y_ Y coord
+ * @param x X coord
+ * @param y Y coord
  */
-class Position {
-    private:
-    int x_;
-    int y_;
-    public:
-    Position(int x,int y);
-    ~Position();
-    int getX() const;
-    int getY() const;
-    void setX(int newX);
-    void setY(int newY);
-    bool operator==(const Position& other) const;
+struct Position {
+    int x;
+    int y;
+
+    Position(int x = 0,int y = 0) : x(x), y(y) {}
+
+    bool operator==(const Position& other) const {
+        return x == other.x && y == other.y;
+    }
+
 };
 namespace std {
     template <>
     struct hash<Position> {
         std::size_t operator()(const Position& pos) const {
-            return std::hash<int>()(pos.getX()) ^ (std::hash<int>()(pos.getY()) << 1);
+            return std::hash<int>()(pos.x) ^ (std::hash<int>()(pos.y) << 1);
         }
     };
 }
@@ -89,26 +87,16 @@ public:
     bool isEmpty();
 };
 
-class Stats {
-private:
+struct Stats {
     int hp;
     double attack;
     double defense;
     int xp;
     int level;
-public:
-    Stats(int hp,double attack, double defense = 2,int xp = 0,int level = 1);
 
-    int getHp() const;
-    void setHp(int amount);
-    double getAttack() const;
-    void setAttack(double newAtt);
-    double getDefense() const;
-    void setDefense(double newDef);
-    int getXp() const;
-    void setXp(int newXp);
-    int getLevel() const;
-    void setLevel(int newLvl);
+    Stats(int hp,double attack, double defense = 2,int xp = 0,int level = 1) :
+    hp(hp), attack(attack), defense(defense), xp(xp), level(level) {}
+
 };
 
 class Mob;

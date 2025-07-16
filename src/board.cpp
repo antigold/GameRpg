@@ -8,8 +8,8 @@ Board::Board() {}
 Board::~Board() = default;
 
 void Board::setEntity(Position pos, std::shared_ptr<Entity> entity) {
-    if (pos.getX() >= 0 && pos.getX() < kBoardSize &&
-        pos.getY() >= 0 && pos.getY() < kBoardSize) {
+    if (pos.x >= 0 && pos.y < kBoardSize &&
+        pos.x >= 0 && pos.y < kBoardSize) {
 
         if (entity) {
             entity->setPosition(pos);
@@ -19,7 +19,7 @@ void Board::setEntity(Position pos, std::shared_ptr<Entity> entity) {
         }
 
     } else {
-        std::cerr << "Position invalide (" << pos.getX() << ", " << pos.getY() << ")" << std::endl;
+        std::cerr << "Position invalide (" << pos.x << ", " << pos.y << ")" << std::endl;
     }
 }
 
@@ -163,30 +163,30 @@ void Board::renderPlayerInfo(SDL_Renderer* renderer, TTF_Font* font, Player* pla
     auto pos = player->getPosition();
     std::ostringstream oss;
 
-    oss << "Position: (" << pos.getX() << ", " << pos.getY() << ")";
+    oss << "Position: (" << pos.x << ", " << pos.y << ")";
     renderText(renderer, font, oss.str(), x, y, white);
     y += 30; oss.str(""); oss.clear();
 
-    oss << "HP: " << player->getStats().getHp();
+    oss << "HP: " << player->getStats().hp;
     renderText(renderer, font, oss.str(), x, y, white);
     y += 30; oss.str(""); oss.clear();
 
-    oss << "Attack: " << player->getStats().getAttack();
+    oss << "Attack: " << player->getStats().attack;
     renderText(renderer, font, oss.str(), x, y, white);
     y += 30; oss.str(""); oss.clear();
 
-    oss << "Defense: " << player->getStats().getDefense();
+    oss << "Defense: " << player->getStats().defense;
     renderText(renderer, font, oss.str(), x, y, white);
     y += 30; oss.str(""); oss.clear();
 
-    oss << "XP: " << player->getStats().getXp() << " | Level: " << player->getStats().getLevel();
+    oss << "XP: " << player->getStats().xp << " | Level: " << player->getStats().level;
     renderText(renderer, font, oss.str(), x, y, white);
     y += 30; oss.str(""); oss.clear();
     
     renderText(renderer, font, "near Mob:", x , y, white);
     if (IsPlayerNearMob(player,board)) {
         auto mob = getNearMob(player,board);
-        oss << " - " << mob->getMobName() << " (HP: " << mob->getStats().getHp() << ")";
+        oss << " - " << mob->getMobName() << " (HP: " << mob->getStats().hp << ")";
         renderText(renderer, font, oss.str(), x + 100, y, red);
     } else {
         renderText(renderer, font, " - None", x + 100, y, white);

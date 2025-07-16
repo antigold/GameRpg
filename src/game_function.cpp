@@ -7,7 +7,7 @@ void HealPlayer(std::shared_ptr<Player> player, int amount) {
 	if (amount < 0) {
 		return;
 	}
-	player->getStats().setHp(player->getStats().getHp() + amount);
+	player->getStats().hp += amount;
 }
 
 void HealPlayerOnItem(std::shared_ptr<Player> player, Board& board, Position pos) {
@@ -28,8 +28,8 @@ void MoveRight(Entity* entity, Board& board,
     if (!player) return;
 
     auto pos = player->getPosition();
-    int newX = pos.getX();
-    int newY = pos.getY() + 1;
+    int newX = pos.x;
+    int newY = pos.y + 1;
     if (newY >= kBoardSize) newY = 0;
 
 	Position targetpos = Position(newX,newY); // New position
@@ -45,7 +45,7 @@ void MoveRight(Entity* entity, Board& board,
 	}
 
     board.setEntity(targetpos, player);
-    board.setEntity(Position(pos.getX(),pos.getY()), nullptr);
+    board.setEntity(Position(pos.x,pos.y), nullptr);
     player->setPosition(targetpos);
 }
 
@@ -59,8 +59,8 @@ void MoveLeft(Entity* entity, Board& board,
 	std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(board.getEntityAt(entity->getPosition()));
     if (!player) return;
     auto pos = player->getPosition();
-    int newX = pos.getX();
-    int newY = pos.getY() - 1;
+    int newX = pos.x;
+    int newY = pos.y - 1;
 
     if (newY < 0){
         newY = kBoardSize - 1;
@@ -79,7 +79,7 @@ void MoveLeft(Entity* entity, Board& board,
 	}
 
     board.setEntity(targetpos, player);
-	board.setEntity(Position(pos.getX(),pos.getY()), nullptr); // Clear old position
+	board.setEntity(Position(pos.x,pos.y), nullptr); // Clear old position
 	player->setPosition(targetpos);
 }
 
@@ -93,8 +93,8 @@ void MoveUp(Entity* entity, Board& board,
 	std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(board.getEntityAt(entity->getPosition()));
     if (!player) return;
 	auto pos = player->getPosition();
-	int newX = pos.getX() - 1;
-	int newY = pos.getY();
+	int newX = pos.x - 1;
+	int newY = pos.y;
 
 	if (newX < 0) {
 		newX = kBoardSize - 1;
@@ -113,7 +113,7 @@ void MoveUp(Entity* entity, Board& board,
 	}
 	
 	board.setEntity(targetpos, player);
-	board.setEntity(Position(pos.getX(),pos.getY()), nullptr); // Clear old position
+	board.setEntity(Position(pos.x,pos.y), nullptr); // Clear old position
 	player->setPosition(targetpos);
 }
 
@@ -127,8 +127,8 @@ void MoveDown(Entity* entity, Board& board,
     if (!player) return;
 
     auto pos = player->getPosition();
-    int newX = pos.getX() + 1;
-    int newY = pos.getY();
+    int newX = pos.x + 1;
+    int newY = pos.y;
 
     if (newX >= kBoardSize) {
         newX = 0;
@@ -148,13 +148,13 @@ void MoveDown(Entity* entity, Board& board,
 
 
     board.setEntity(targetpos, player);
-    board.setEntity(Position(pos.getX(),pos.getY()), nullptr); // Clear old position
+    board.setEntity(Position(pos.x,pos.y), nullptr); // Clear old position
     player->setPosition(targetpos);
 }
 
 
 void CollectItem(std::shared_ptr<Player> player, Board& board,Position pos) {
-	Position entity_pos = Position(pos.getX(),pos.getY());
+	Position entity_pos = Position(pos.x,pos.y);
     Entity* entity = board.getEntityAt(entity_pos).get();
     Item* item = dynamic_cast<Item*>(entity);
     if (item) {
@@ -165,8 +165,8 @@ void CollectItem(std::shared_ptr<Player> player, Board& board,Position pos) {
 
 bool IsPlayerNearMob(Player* player, Board& board) {
 	auto playerPos = player->getPosition();
-	for (int x = playerPos.getX() - 2; x <= playerPos.getX() + 2; ++x) {
-		for (int y = playerPos.getY() - 2; y <= playerPos.getY() + 2; ++y) {
+	for (int x = playerPos.x - 2; x <= playerPos.x + 2; ++x) {
+		for (int y = playerPos.y - 2; y <= playerPos.y + 2; ++y) {
 			if (x >= 0 && x < kBoardSize && y >= 0 && y < kBoardSize) {
 				Entity* entity = board.getEntityAt(Position(x,y)).get();
 				if (entity && entity->getType() == EntityType::MOB) {
@@ -180,8 +180,8 @@ bool IsPlayerNearMob(Player* player, Board& board) {
 
 Mob* getNearMob(Player* player, Board& board) {
 	auto playerPos = player->getPosition();
-	for (int x = playerPos.getX() - 2; x <= playerPos.getX() + 2; ++x) {
-		for (int y = playerPos.getY() - 2; y <= playerPos.getY() + 2; ++y) {
+	for (int x = playerPos.x - 2; x <= playerPos.x + 2; ++x) {
+		for (int y = playerPos.y - 2; y <= playerPos.y + 2; ++y) {
 			if (x >= 0 && x < kBoardSize && y >= 0 && y < kBoardSize) {
 				Entity* entity = board.getEntityAt(Position(x,y)).get();
 				if (entity && entity->getType() == EntityType::MOB) {

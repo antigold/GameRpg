@@ -70,6 +70,7 @@ void StartFight(Board& board, std::shared_ptr<Player> player, std::shared_ptr<Mo
 
     bool isCombatOver = false;
     Turn currentTurn = Turn::PLAYER;
+    player->setPlayerProtecting(false);
 
     SDL_Event e;
 
@@ -92,18 +93,16 @@ void StartFight(Board& board, std::shared_ptr<Player> player, std::shared_ptr<Mo
                 player->attack(mob);
                 player->setPlayerProtecting(false);
                 currentTurn = Turn::MOB;
-                //SDL_Delay(1000);
+
             } else if (is_key_pressed(SDL_SCANCODE_P)) {
                 player->setPlayerProtecting(true);
                 currentTurn = Turn::MOB;
-                //SDL_Delay(1000);
+                
             }
         } else if (currentTurn == Turn::MOB) {
-            if (player->isPlayerProtecting()) {
-                player->protect(mob->getStats().attack);
-            } else {
-                mob->attackPlayer(player);
-            }
+            
+            mob->attackPlayer(player);
+            
             currentTurn = Turn::PLAYER;
             SDL_Delay(1000);
         }

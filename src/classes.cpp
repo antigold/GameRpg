@@ -126,9 +126,8 @@ double Player::protect(double attackAmount){
     if (!isPlayerProtecting()){
         return 0;
     }
-    double defense = getStats().defense;
-    double damageReductionFactor = 0.5; // 50% en mode protect
-    double newAttackAmount = attackAmount * (100.0 / (100.0 + defense)) * damageReductionFactor;
+    double damageReductionFactor = 0.5; // 50% of shield protection
+    double newAttackAmount = attackAmount * damageReductionFactor;
 
     return newAttackAmount;
 }

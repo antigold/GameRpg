@@ -132,14 +132,6 @@ double Player::protect(double attackAmount){
     return newAttackAmount;
 }
 
-int Player::getMaxHp() const {
-    return maxHp;
-}
-
-void Player::setMaxHp(int newMHp){
-    maxHp = newMHp;
-}
-
 //|================================|Class Mob|======================================|
 
 Mob::Mob(const std::string& name,Stats Stats,Position pos) : Entity(EntityType::MOB,25.0,3.0,pos), mobname(name),
@@ -175,12 +167,31 @@ void Mob::attackPlayer(std::shared_ptr<Player> player) {
     player->getStats().hp = playerHp;
 }
 
-int Mob::getMaxHp() const {
-    return maxHp;
+//============================|Class Stats|=========================================|
+
+void Stats::checkLvlUp(){
+    int threshold = level * 10;
+    while (xp >= threshold) {
+        xp -= threshold;
+        level++;
+        maxHp += 5;
+        hp = maxHp;
+        attack += 2;
+        defense += 0.5;
+        std::cout << "Level Up !" << std::endl;
+
+        threshold = level * (2 * level);
+    }
 }
 
-void Mob::setMaxHp(int newMHp){
-    maxHp = newMHp;
+void Stats::gainXp(int amount){
+    xp += amount;
+    checkLvlUp();
+}
+
+int Stats::getXpToNxtLvl(){
+    int threshold = level * 10;
+    return threshold - xp;
 }
 
 

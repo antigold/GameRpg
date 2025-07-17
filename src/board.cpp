@@ -161,6 +161,7 @@ void Board::renderPlayerInfo(SDL_Renderer* renderer, TTF_Font* font, Player* pla
     int y = 10;
 
     auto pos = player->getPosition();
+    int nextXp = player->getStats().getXpToNxtLvl();
     std::ostringstream oss;
 
     oss << "Position: (" << pos.x << ", " << pos.y << ")";
@@ -179,7 +180,7 @@ void Board::renderPlayerInfo(SDL_Renderer* renderer, TTF_Font* font, Player* pla
     renderText(renderer, font, oss.str(), x, y, white);
     y += 30; oss.str(""); oss.clear();
 
-    oss << "XP: " << player->getStats().xp << " | Level: " << player->getStats().level;
+    oss << "XP: " << player->getStats().xp << " | Level: " << player->getStats().level << "| next lvl in: "<< nextXp << " Xp";
     renderText(renderer, font, oss.str(), x, y, white);
     y += 30; oss.str(""); oss.clear();
     

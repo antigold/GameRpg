@@ -31,8 +31,8 @@ void displayCombat(SDL_Renderer* renderer, TTF_Font* font,
     SDL_RenderCopy(renderer, mobTexture, NULL, &mobRect);
 
     // Affiche les HP
-    std::string playerHpText = "Player HP: " + std::to_string((int)player->getStats().hp) + "/" + std::to_string(player->getMaxHp());
-    std::string mobHpText = "Enemy HP: " + std::to_string((int)mob->getStats().hp)+ "/" + std::to_string(mob->getMaxHp());
+    std::string playerHpText = "Player HP: " + std::to_string((int)player->getStats().hp) + "/" + std::to_string(player->getStats().maxHp);
+    std::string mobHpText = "Enemy HP: " + std::to_string((int)mob->getStats().hp)+ "/" + std::to_string(mob->getStats().maxHp);
     renderText(renderer,font,"Press A/Q to attack",100,500,white);
     renderText(renderer,font,"Press P to protect",300,500,white);
 
@@ -82,7 +82,12 @@ void StartFight(Board& board, std::shared_ptr<Player> player, std::shared_ptr<Mo
         }
         displayCombat(renderer, font, playerTexture, mobTexture, player, mob,currentTurn);
 
-        if (player->getStats().hp <= 0 || mob->getStats().hp <= 0) {
+        if (mob->getStats().hp <= 0) { // Player won the fight
+            isCombatOver = true;
+            player->getStats().gainXp(mob->getStats().level * 3);
+            break;
+        }
+        if (player->getStats().hp <= 0){ // Player lost the fight
             isCombatOver = true;
             break;
         }

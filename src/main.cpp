@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    SDL_Surface* MobSurface = IMG_Load("assets/images/Fatass.jpg");
+    SDL_Surface* MobSurface = IMG_Load("assets/images/sinje.jpg");
     if (!MobSurface) {
         std::cerr << "Failed to load mob image: " << IMG_GetError() << std::endl;
         SDL_FreeSurface(BowSurface);

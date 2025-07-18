@@ -58,7 +58,25 @@ void displayCombat(SDL_Renderer* renderer, TTF_Font* font,
         renderText(renderer, font, line, menuX + i * 200, menuY, color);
     }
 
+    DisplayRect(renderer,menuX,menuY,options);
     SDL_RenderPresent(renderer);
+}
+
+void DisplayRect(SDL_Renderer* renderer,int x, int y,const std::vector<std::string>& options){
+
+    int SpacingX = 200;
+    int padding = 10;
+
+     for (int i = 0; i < options.size(); ++i) {
+        int rectX = x + i * SpacingX - padding;
+        int rectY = y - padding;
+        int rectW = 100 + 2 * padding;
+        int rectH = 30 + 2 * padding;
+
+        SDL_Rect rect = {rectX, rectY, rectW, rectH};
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); //white
+        SDL_RenderDrawRect(renderer, &rect);
+    }
 }
 
 void StartFight(Board& board, std::shared_ptr<Player> player, std::shared_ptr<Mob> mob,
@@ -69,6 +87,7 @@ void StartFight(Board& board, std::shared_ptr<Player> player, std::shared_ptr<Mo
     Turn currentTurn = Turn::PLAYER;
     player->setPlayerProtecting(false);
     int selectedIndex = 0;
+
 
     SDL_Event e;
 

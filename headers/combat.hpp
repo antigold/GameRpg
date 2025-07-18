@@ -21,5 +21,7 @@ void displayCombat(SDL_Renderer* renderer, TTF_Font* font,
                    std::shared_ptr<Player> player, std::shared_ptr<Mob> mob,Turn currentTurn,
                     int selectedIndex);
 
+void DisplayRect(SDL_Renderer* renderer,int x,int y,const std::vector<std::string>& options);
+
 void StartFight(Board& board,std::shared_ptr<Player> player, std::shared_ptr<Mob> mob
                 ,SDL_Renderer* renderer, TTF_Font* font,SDL_Texture* Playertexture,SDL_Texture* MobTexture);

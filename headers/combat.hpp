@@ -15,9 +15,11 @@ enum class Turn{
 };
 
 void renderText(SDL_Renderer* renderer, TTF_Font* font, const std::string& text, int x, int y, SDL_Color color);
+
 void displayCombat(SDL_Renderer* renderer, TTF_Font* font,
                    SDL_Texture* playerTexture, SDL_Texture* mobTexture,
-                   std::shared_ptr<Player> player, std::shared_ptr<Mob> mob,Turn currentTurn);
+                   std::shared_ptr<Player> player, std::shared_ptr<Mob> mob,Turn currentTurn,
+                    int selectedIndex);
 
 void StartFight(Board& board,std::shared_ptr<Player> player, std::shared_ptr<Mob> mob
                 ,SDL_Renderer* renderer, TTF_Font* font,SDL_Texture* Playertexture,SDL_Texture* MobTexture);

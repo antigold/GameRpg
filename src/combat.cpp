@@ -4,6 +4,7 @@
 SDL_Color white = {255, 255, 255, 255};
 SDL_Color green = {15,255,0,0};
 SDL_Color red = {155,0,0,0};
+SDL_Color yellow = {255, 255, 0, 255};
 
 void renderText(SDL_Renderer* renderer, TTF_Font* font, const std::string& text, int x, int y, SDL_Color color) {
 	SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
@@ -19,7 +20,8 @@ void renderText(SDL_Renderer* renderer, TTF_Font* font, const std::string& text,
 
 void displayCombat(SDL_Renderer* renderer, TTF_Font* font,
                    SDL_Texture* playerTexture, SDL_Texture* mobTexture,
-                   std::shared_ptr<Player> player, std::shared_ptr<Mob> mob,Turn currentTurn) {
+                   std::shared_ptr<Player> player, std::shared_ptr<Mob> mob,Turn currentTurn,
+                    int selectedIndex) {
     
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
@@ -30,36 +32,31 @@ void displayCombat(SDL_Renderer* renderer, TTF_Font* font,
     SDL_RenderCopy(renderer, playerTexture, NULL, &playerRect);
     SDL_RenderCopy(renderer, mobTexture, NULL, &mobRect);
 
-    // Affiche les HP
-    std::string playerHpText = "Player HP: " + std::to_string((int)player->getStats().hp) + "/" + std::to_string(player->getStats().maxHp);
-    std::string mobHpText = "Enemy HP: " + std::to_string((int)mob->getStats().hp)+ "/" + std::to_string(mob->getStats().maxHp);
-    renderText(renderer,font,"Press A/Q to attack",100,500,white);
-    renderText(renderer,font,"Press P to protect",300,500,white);
+     // HUD - HP
+    std::string playerHpText = "Player HP: " + std::to_string((int)player->getStats().hp) +
+                               "/" + std::to_string(player->getStats().maxHp);
+    std::string mobHpText = "Enemy HP: " + std::to_string((int)mob->getStats().hp) +
+                            "/" + std::to_string(mob->getStats().maxHp);
+    renderText(renderer,font,playerHpText,100,150,green);
+    renderText(renderer,font,mobHpText,400,150,red);
+
 
     if (currentTurn == Turn::MOB){
-        renderText(renderer,font,"Enemy is attacking",300,100,red);
+        renderText(renderer,font,"Enemy is attacking",250,100,red);
     } else {
-        renderText(renderer,font,"Player turn",300,100,white);
+        renderText(renderer,font,"Player turn",250,100,white);
     }
 
-    SDL_Surface* playerHpSurface = TTF_RenderText_Blended(font, playerHpText.c_str(), green);
-    SDL_Surface* mobHpSurface = TTF_RenderText_Blended(font, mobHpText.c_str(), white);
+    std::vector<std::string> options = {"Attack","Protect","Inventory","Run"};
+    int menuX = 100;
+    int menuY = 400;
 
-    SDL_Texture* playerHpTexture = SDL_CreateTextureFromSurface(renderer, playerHpSurface);
-    SDL_Texture* mobHpTexture = SDL_CreateTextureFromSurface(renderer, mobHpSurface);
-    SDL_FreeSurface(playerHpSurface);
-    SDL_FreeSurface(mobHpSurface);
-
-    SDL_Rect playerHpRect = {100, 150, 0, 0};
-    SDL_QueryTexture(playerHpTexture, NULL, NULL, &playerHpRect.w, &playerHpRect.h);
-    SDL_RenderCopy(renderer, playerHpTexture, NULL, &playerHpRect);
-
-    SDL_Rect mobHpRect = {400, 150, 0, 0};
-    SDL_QueryTexture(mobHpTexture, NULL, NULL, &mobHpRect.w, &mobHpRect.h);
-    SDL_RenderCopy(renderer, mobHpTexture, NULL, &mobHpRect);
-
-    SDL_DestroyTexture(playerHpTexture);
-    SDL_DestroyTexture(mobHpTexture);
+    for (int i = 0; i < options.size(); i++){
+        //TODO: selectedIndex comparing an int while being a size_t type
+        std::string line = (i == selectedIndex) ? "> " + options[i] : "  " + options[i];
+        SDL_Color color = (i == selectedIndex) ? yellow : white;
+        renderText(renderer, font, line, menuX + i * 200, menuY, color);
+    }
 
     SDL_RenderPresent(renderer);
 }
@@ -71,49 +68,66 @@ void StartFight(Board& board, std::shared_ptr<Player> player, std::shared_ptr<Mo
     bool isCombatOver = false;
     Turn currentTurn = Turn::PLAYER;
     player->setPlayerProtecting(false);
+    int selectedIndex = 0;
 
     SDL_Event e;
+
+    std::vector<std::string> options = {"Attack", "Protect", "Inventory", "Run"};
 
     while (!isCombatOver) {
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
                 exit(0);
             }
-        }
-        displayCombat(renderer, font, playerTexture, mobTexture, player, mob,currentTurn);
 
-        if (mob->getStats().hp <= 0) { // Player won the fight
-            isCombatOver = true;
-            player->getStats().gainXp(mob->getStats().level * 3);
-            break;
-        }
-        if (player->getStats().hp <= 0){ // Player lost the fight
-            isCombatOver = true;
-            break;
-        }
-
-        // Gestion du tour
-        if (currentTurn == Turn::PLAYER) {
-            if (is_key_pressed(SDL_SCANCODE_A)) {
-                player->attack(mob);
-                player->setPlayerProtecting(false);
-                currentTurn = Turn::MOB;
-
-            } else if (is_key_pressed(SDL_SCANCODE_P)) {
-                player->setPlayerProtecting(true);
-                currentTurn = Turn::MOB;
-
+            if (mob->getStats().hp <= 0) { // Enemy defeated
+                isCombatOver = true;
+                player->getStats().gainXp(mob->getStats().level * 3); // Player gain Xp 
+                break;
+            } else if (player->getStats().hp <= 0) { // Player defeated
+                isCombatOver = true;
+                break;
             }
-        } else if (currentTurn == Turn::MOB) {
-            
+
+            if (currentTurn == Turn::PLAYER && e.type == SDL_KEYDOWN) {
+                if (e.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
+                    selectedIndex = (selectedIndex + 1) % options.size();
+                } else if (e.key.keysym.scancode == SDL_SCANCODE_LEFT) {
+                    selectedIndex = (selectedIndex - 1 + options.size()) % options.size();
+                } else if (e.key.keysym.scancode == SDL_SCANCODE_RETURN) {
+
+                    std::string choice = options[selectedIndex];
+
+                    if (choice == "Attack") {
+                        player->attack(mob);
+                        player->setPlayerProtecting(false);
+                        currentTurn = Turn::MOB;
+                    } else if (choice == "Protect") {
+                        player->setPlayerProtecting(true);
+                        currentTurn = Turn::MOB;
+                    } else if (choice == "Inventory") {
+                        // TODO: Afficher sous-menu inventaire ici
+                        std::cout << "Inventory selected (à implémenter)" << std::endl;
+                    } else if (choice == "Run") {
+                        std::cout << "Player tried to run..." << std::endl;
+                        isCombatOver = true;
+                    }
+                }
+            }
+        }
+
+        displayCombat(renderer, font, playerTexture, mobTexture, player, mob, currentTurn, selectedIndex);
+
+        // Enemy Turn
+        if (currentTurn == Turn::MOB) {
+            SDL_Delay(500);
             mob->attackPlayer(player);
-            
             currentTurn = Turn::PLAYER;
-            SDL_Delay(1000);
+            SDL_Delay(500);
         }
     }
 }
 
-//TODO: le delai, l'IG,l'XP et gain de niveau.
+//TODO: l'IG + inventaire et meilleur systeme de run. (trop simple pour l'instant)
 
 

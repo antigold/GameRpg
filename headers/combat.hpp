@@ -1,6 +1,13 @@
+#pragma once
 #include <iostream>
 #include "board.hpp"
+#include "mob.hpp"
+#include "player.hpp"
+#include "stats.hpp"
 #include "input.h"
+
+class Player;
+class Mob;
 
 enum class GameState {
     FREE, // the player is free to move

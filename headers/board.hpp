@@ -7,7 +7,11 @@
 #include <vector>
 #include <unordered_map>
 #include <memory>
-#include "game_function.hpp"
+#include "player.hpp"
+#include "mob.hpp"
+#include "gameStates.hpp"
+
+class Entity;
 
 const int kBoardSize = 19;
 const int kTilesize = 32;
@@ -27,6 +31,8 @@ public:
 
     void setEntity(Position pos, std::shared_ptr<Entity> entity);
     void DeleteEntity(Position pos);
+    std::unordered_map<Position,std::shared_ptr<Entity>> getEntities() const;
+    bool isWalkable(Position pos) const;
 
     std::shared_ptr<Entity> getEntityAt(Position pos) const;
 
@@ -44,3 +50,7 @@ public:
     void renderText(SDL_Renderer* renderer, TTF_Font* font, const std::string& text, int x, int y, SDL_Color color);
     void drawTitleScreen(SDL_Renderer* renderer, TTF_Font* font);
 };
+
+Direction getRandomDirection();
+int dx(Direction dir);
+int dy(Direction dir);

@@ -23,6 +23,19 @@ void Board::setEntity(Position pos, std::shared_ptr<Entity> entity) {
     }
 }
 
+std::unordered_map<Position,std::shared_ptr<Entity>> Board::getEntities() const {
+    return entities;
+}
+
+bool Board::isWalkable(Position pos) const {
+    if (pos.x < 0 || pos.x >= kBoardSize || pos.y < 0 || pos.y >= kBoardSize)
+        return false;
+
+    // Vérifie s'il y a une entité à cette position
+    auto it = entities.find(pos);
+    return (it == entities.end()); // True si aucune entité présente
+}
+
 
 std::shared_ptr<Entity> Board::getEntityAt(Position pos) const {
 
@@ -219,5 +232,28 @@ void Board::drawTitleScreen(SDL_Renderer* renderer, TTF_Font* font){
     renderText(renderer, font, "Mini RPG Game", 350, 200,white);
     renderText(renderer, font, "Press SPACE to start", 300, 300,white);
     renderText(renderer,font,"personal project by Mouad, (it sucks)",420,570,white);
+}
+
+Direction getRandomDirection() {
+    int r = rand() % 4;
+    switch (r) {
+        case 0: return Direction::UP;
+        case 1: return Direction::DOWN;
+        case 2: return Direction::LEFT;
+        case 3: return Direction::RIGHT;
+        default: return Direction::NONE;
+    }
+}
+
+int dx(Direction dir) {
+    if (dir == Direction::LEFT) return -1;
+    if (dir == Direction::RIGHT) return 1;
+    return 0;
+}
+
+int dy(Direction dir) {
+    if (dir == Direction::UP) return -1;
+    if (dir == Direction::DOWN) return 1;
+    return 0;
 }
 

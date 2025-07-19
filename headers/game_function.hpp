@@ -3,11 +3,17 @@
 #include <SDL_ttf.h>
 #include <SDL.h>
 #include <SDL_image.h>
+#include "player.hpp"
+#include "mob.hpp"
+#include "entity.hpp"
+#include "board.hpp"
 
 #ifndef GAMEFUNCTION_HPP
 #define GAMEFUNCTION_HPP
 
 class Board;
+class Player;
+class Mob;
 
 
 void HealPlayer(std::shared_ptr<Player> player,int amount);

@@ -33,6 +33,8 @@ int main(int argc, char *argv[]) {
     board.setEntity(Position(randomPosItem.x, randomPosItem.y), Sword_);
     board.setEntity(Position(randomPosBow.x, randomPosBow.y), Bow_);
 
+    InitMobAlgorithm(board,player); // Init the enemies algorithm
+
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         return 1;
     }
